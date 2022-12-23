@@ -151,7 +151,7 @@ public class HqlUserRepository implements UserRepository {
             Query<User> query = session.createQuery(FIND_BY_ID_STATEMENT, User.class);
             query.setParameter(ID, id);
             session.getTransaction().commit();
-            return Optional.of(query.uniqueResult());
+            return query.uniqueResultOptional();
         } catch (Exception e) {
             LOG.error("Exception in UserRepository", e);
             session.getTransaction().rollback();
@@ -197,7 +197,7 @@ public class HqlUserRepository implements UserRepository {
             Query<User> query = session.createQuery(FIND_BY_LOGIN_STATEMENT, User.class);
             query.setParameter(LOGIN, login);
             session.getTransaction().commit();
-            return Optional.of(query.uniqueResult());
+            return query.uniqueResultOptional();
         } catch (Exception e) {
             LOG.error("Exception in UserRepository", e);
             session.getTransaction().rollback();
