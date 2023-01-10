@@ -17,7 +17,7 @@ public interface UserRepository {
      * @return пользователь с id обернутый в Optional если пользователь успешно добавлен,
      * Optional.empty() если пользователь не добавлен.
      */
-    Optional<User> create(User user);
+    User create(User user);
 
     /**
      * Обновить в базе пользователя.
