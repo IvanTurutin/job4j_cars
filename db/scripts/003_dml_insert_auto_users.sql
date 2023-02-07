@@ -1,3 +1,3 @@
-INSERT INTO auto_users (login, password) VALUES ('Ivanov', 'root');
-INSERT INTO auto_users (login, password) VALUES ('Petrov', 'root');
-INSERT INTO auto_users (login, password) VALUES ('Sidorov', 'root');
+INSERT INTO auto_users (login, password) VALUES ('Ivan', '123');
+INSERT INTO auto_users (login, password) VALUES ('Petrov', 'qwe');
+INSERT INTO auto_users (login, password) VALUES ('Sidorov', 'asd');

@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS auto_posts
 (
     id SERIAL PRIMARY KEY,
     text VARCHAR NOT NULL,
-    created TIMESTAMP NOT NULL,
+    created TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),
     auto_user_id INT NOT NULL REFERENCES auto_users(id)
 );
 

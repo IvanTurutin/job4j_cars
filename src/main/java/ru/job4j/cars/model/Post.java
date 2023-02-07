@@ -34,7 +34,7 @@ public class Post {
     /**
      * Время создания объявления
      */
-    private LocalDateTime created;
+    private LocalDateTime created = LocalDateTime.now();
     /**
      * Пользователь, создавший объявление
      */
@@ -43,12 +43,22 @@ public class Post {
     private User user;
 
     /**
+     * Автомобиль, который продается в этом объявлении
+     */
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "car_id")
+    private Car car;
+
+    /**
      * Список изменений цены
      */
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private List<PriceHistory> priceHistory = new ArrayList<>();
 
+    /**
+     * Список пользователей, подписанных на объявление
+     */
     @ManyToMany
     @JoinTable(
             name = "participates",

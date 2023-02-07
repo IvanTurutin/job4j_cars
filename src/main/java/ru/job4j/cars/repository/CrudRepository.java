@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 public interface CrudRepository {
 
-    void run(Consumer<Session> command);
+    boolean run(Consumer<Session> command);
 
     void run(String query, Map<String, Object> args);
 
@@ -20,5 +20,7 @@ public interface CrudRepository {
 
     <T> List<T> query(String query, Class<T> cl, Map<String, Object> args);
 
-    <T> T tx(Function<Session, T> command);
+    boolean query(String query, Map<String, Object> args);
+
+    <T> T tx(Function<Session, T> command) throws Exception;
 }

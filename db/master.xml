@@ -10,4 +10,15 @@
     <include file="scripts/003_dml_insert_auto_users.sql" relativeToChangelogFile="true"/>
     <include file="scripts/004_ddl_create_price_history_table.sql" relativeToChangelogFile="true"/>
     <include file="scripts/005_ddl_create_participates_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/006_ddl_create_engines_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/007_ddl_create_owners_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/008_ddl_create_cars_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/009_ddl_create_car_owners_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/010_ddl_alter_auto_posts_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/011_dml_insert_engines.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/012_dml_insert_owners.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/013_dml_insert_cars.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/014_dml_insert_car_owners.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/015_dml_insert_auto_posts.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/016_dml_insert_price_history.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

@@ -3,7 +3,10 @@ package ru.job4j.cars.repository;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,13 +16,23 @@ import java.util.function.Function;
 @AllArgsConstructor
 public class SimpleCrudRepository implements CrudRepository {
     private final SessionFactory sf;
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleCrudRepository.class.getName());
+    private static final String LOG_MESSAGE = "Exception in SimpleCrudRepository";
 
-    public void run(Consumer<Session> command) {
-        tx(session -> {
-                    command.accept(session);
-                    return null;
-                }
-        );
+
+    public boolean run(Consumer<Session> command) {
+        boolean rslt = false;
+        try {
+            tx(session -> {
+                        command.accept(session);
+                        return null;
+                    }
+            );
+            rslt = true;
+        } catch (Exception e) {
+            LOG.error(LOG_MESSAGE, e);
+        }
+        return rslt;
     }
 
     public void run(String query, Map<String, Object> args) {
@@ -43,14 +56,24 @@ public class SimpleCrudRepository implements CrudRepository {
             }
             return Optional.ofNullable(sq.getSingleResult());
         };
-        return tx(command);
+        try {
+            return tx(command);
+        } catch (Exception e) {
+            LOG.error(LOG_MESSAGE, e);
+        }
+        return Optional.empty();
     }
 
     public <T> List<T> query(String query, Class<T> cl) {
         Function<Session, List<T>> command = session -> session
                 .createQuery(query, cl)
                 .list();
-        return tx(command);
+        try {
+            return tx(command);
+        } catch (Exception e) {
+            LOG.error(LOG_MESSAGE, e);
+        }
+        return new ArrayList<>();
     }
 
     public <T> List<T> query(String query, Class<T> cl, Map<String, Object> args) {
@@ -62,10 +85,30 @@ public class SimpleCrudRepository implements CrudRepository {
             }
             return sq.list();
         };
-        return tx(command);
+        try {
+            return tx(command);
+        } catch (Exception e) {
+            LOG.error(LOG_MESSAGE, e);
+        }
+        return new ArrayList<>();
     }
 
-    public <T> T tx(Function<Session, T> command) {
+    @Override
+    public boolean query(String query, Map<String, Object> args) {
+        Function<Session, Boolean> command = session -> {
+            var sq = session.createQuery(query);
+            args.forEach(sq::setParameter);
+            return sq.executeUpdate() > 0;
+        };
+        try {
+            return tx(command);
+        } catch (Exception e) {
+            LOG.error(LOG_MESSAGE, e);
+        }
+        return false;
+    }
+
+    public <T> T tx(Function<Session, T> command) throws Exception {
         var session = sf.openSession();
         try (session) {
             var tx = session.beginTransaction();
@@ -77,7 +120,7 @@ public class SimpleCrudRepository implements CrudRepository {
             if (tx.isActive()) {
                 tx.rollback();
             }
-            throw e;
+            throw new Exception(e);
         }
     }
 }
