@@ -10,7 +10,6 @@ import ru.job4j.cars.model.User;
 import ru.job4j.cars.repository.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class PostUsage {
     public static void main(String[] args) {
@@ -51,9 +50,10 @@ public class PostUsage {
             priceHistory2.setAfter(90);
             priceHistory2.setBefore(100);
 
+/*
             post.setPriceHistory(List.of(priceHistory1, priceHistory2));
 
-            postRepository.create(post);
+            postRepository.add(post);
 
             userRepository.findAllOrderById()
                     .forEach(System.out::println);
@@ -69,6 +69,7 @@ public class PostUsage {
                     .ifPresent(System.out::println);
 
             postRepository.findById(post.getId()).get().getPriceHistory().forEach(System.out::println);
+*/
 /*
             postRepository.truncate();
             userRepository.truncate();

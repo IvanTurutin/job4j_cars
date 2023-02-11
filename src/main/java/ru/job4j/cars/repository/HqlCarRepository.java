@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Репозиторий задач
+ * Репозиторий автомобилей
  * @see ru.job4j.cars.model.Car
  */
 @ThreadSafe

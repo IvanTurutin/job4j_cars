@@ -9,7 +9,7 @@
     <include file="scripts/002_ddl_create_auto_posts_table.sql" relativeToChangelogFile="true"/>
     <include file="scripts/003_dml_insert_auto_users.sql" relativeToChangelogFile="true"/>
     <include file="scripts/004_ddl_create_price_history_table.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/005_ddl_create_participates_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/005_ddl_create_posts_users_table.sql" relativeToChangelogFile="true"/>
     <include file="scripts/006_ddl_create_engines_table.sql" relativeToChangelogFile="true"/>
     <include file="scripts/007_ddl_create_owners_table.sql" relativeToChangelogFile="true"/>
     <include file="scripts/008_ddl_create_cars_table.sql" relativeToChangelogFile="true"/>
@@ -21,4 +21,6 @@
     <include file="scripts/014_dml_insert_car_owners.sql" relativeToChangelogFile="true"/>
     <include file="scripts/015_dml_insert_auto_posts.sql" relativeToChangelogFile="true"/>
     <include file="scripts/016_dml_insert_price_history.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/017_ddl_create_files_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/018_dml_insert_files.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

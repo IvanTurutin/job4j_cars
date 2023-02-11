@@ -38,5 +38,6 @@ public class PriceHistory {
     /**
      * Дата изменения цены
      */
-    private LocalDateTime created;
+    private LocalDateTime created = LocalDateTime.now();
+
 }

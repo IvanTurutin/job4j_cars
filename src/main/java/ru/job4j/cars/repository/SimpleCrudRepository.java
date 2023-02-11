@@ -54,7 +54,9 @@ public class SimpleCrudRepository implements CrudRepository {
             for (Map.Entry<String, Object> arg : args.entrySet()) {
                 sq.setParameter(arg.getKey(), arg.getValue());
             }
-            return Optional.ofNullable(sq.getSingleResult());
+            var rslt = sq.getSingleResult();
+            System.out.println(rslt);
+            return Optional.ofNullable(rslt);
         };
         try {
             return tx(command);

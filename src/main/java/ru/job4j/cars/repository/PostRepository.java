@@ -16,7 +16,7 @@ public interface PostRepository {
      * @param post объявление.
      * @return добавленное объявление.
      */
-    Post create(Post post);
+    Post add(Post post);
 
     /**
      * Обновляет в базе объявление.
@@ -48,5 +48,25 @@ public interface PostRepository {
      * @return список объявлений.
      */
     List<Post> findByUser(User user);
+
+    /**
+     * Осуществляет поиск объявлений за последние дни
+     * @param days количество дней, за которые требуется найти объявления
+     * @return список объявлений удовлетворяющих требованию
+     */
+    List<Post> findLastDays(int days);
+
+    /**
+     * Осуществляет поиск всех объявлений с фото
+     * @return список объявлений
+     */
+    List<Post> findWithPhoto();
+
+    /**
+     * Осуществляет поиск объявлений по марке автомобиля
+     * @param carName марка автомобиля
+     * @return список объявлений
+     */
+    List<Post> findCarName(String carName);
 
 }

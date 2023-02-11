@@ -8,6 +8,6 @@ CREATE TABLE IF NOT EXISTS cars
 
 comment on table cars is 'Автомобили';
 comment on column cars.id is 'Идентификатор автомобиля';
-comment on column cars.name is 'Название автомобиля';
+comment on column cars.name is 'Модель автомобиля';
 comment on column cars.engine_id is 'Идентификатор двигателя, установленного в автомобиле';
 comment on column cars.owner_id is 'Идентификатор текущего владельца автомобиля';
