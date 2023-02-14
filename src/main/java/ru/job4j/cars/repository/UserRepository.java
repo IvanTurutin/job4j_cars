@@ -52,8 +52,10 @@ public interface UserRepository {
 
     /**
      * Найти пользователя по login.
-     * @param login login.
+     *
+     * @param login    login.
+     * @param password пароль
      * @return Optional or user.
      */
-    Optional<User> findByLogin(String login);
+    Optional<User> findByLoginAndPassword(String login, String password);
 }

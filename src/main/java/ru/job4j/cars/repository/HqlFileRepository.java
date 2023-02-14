@@ -28,7 +28,7 @@ public class HqlFileRepository implements FileRepository {
             MODEL, ID
     );
     public static final String FIND_ALL_STATEMENT = String.format("from %s", MODEL);
-    public static final String FIND_BY_ID_STATEMENT = FIND_ALL_STATEMENT + String.format(" where t.id = :%s", ID);
+    public static final String FIND_BY_ID_STATEMENT = FIND_ALL_STATEMENT + String.format(" where id = :%s", ID);
     public static final String TRUNCATE_TABLE = String.format("DELETE FROM %s", MODEL);
 
     @Override

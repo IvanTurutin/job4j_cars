@@ -18,6 +18,7 @@ public class HqlUserRepository implements UserRepository {
 
     public static final String USER_MODEL = "User";
     public static final String LOGIN = "fLogin";
+    public static final String PASSWORD = "fPass";
     public static final String ID = "fId";
     public static final String TRUNCATE_TABLE = String.format("DELETE FROM %s", USER_MODEL);
     public static final String DELETE_STATEMENT = String.format(
@@ -31,7 +32,7 @@ public class HqlUserRepository implements UserRepository {
     public static final String FIND_BY_LOGIN_LIKE_STATEMENT = FIND_ALL_STATEMENT
             + String.format(" where login like :%s", KEY);
     public static final String FIND_BY_LOGIN_STATEMENT = FIND_ALL_STATEMENT
-            + String.format(" where login = :%s", LOGIN);
+            + String.format(" where login = :%s and password = :%s", LOGIN, PASSWORD);
 
     /**
      * Сохраняет пользователя в базе.
@@ -101,15 +102,20 @@ public class HqlUserRepository implements UserRepository {
     }
 
     /**
-     * Найти пользователя по login.
-     * @param login login.
+     * Найти пользователя по login и паролю.
+     *
+     * @param login    login.
+     * @param password пароль
      * @return Optional or user.
      */
     @Override
-    public Optional<User> findByLogin(String login) {
+    public Optional<User> findByLoginAndPassword(String login, String password) {
         return crudRepository.optional(
                 FIND_BY_LOGIN_STATEMENT, User.class,
-                Map.of(LOGIN, login)
+                Map.of(
+                        LOGIN, login,
+                        PASSWORD, password
+                )
         );
     }
 

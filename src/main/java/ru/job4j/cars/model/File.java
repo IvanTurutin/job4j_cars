@@ -22,12 +22,12 @@ public class File {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     private int id;
 
     /**
      * Имя файла
      */
+    @EqualsAndHashCode.Include
     private String name;
 
     /**

@@ -3,7 +3,7 @@ package ru.job4j.cars.repository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ru.job4j.cars.Main;
+import ru.job4j.cars.config.HibernateConfiguration;
 import ru.job4j.cars.model.Car;
 import ru.job4j.cars.model.Engine;
 import ru.job4j.cars.model.Owner;
@@ -26,7 +26,7 @@ class HqlCarRepositoryTest {
 
     @BeforeAll
     public static void initStore() {
-        CrudRepository cr = new SimpleCrudRepository(new Main().sf());
+        CrudRepository cr = new SimpleCrudRepository(new HibernateConfiguration().sf());
         store = new HqlCarRepository(cr);
         store.truncateTable();
 
@@ -53,7 +53,7 @@ class HqlCarRepositoryTest {
     }
 
     @Test
-    void add() {
+    void whenAddAndFindById() {
         Car car = new Car();
         car.setName("car1");
 
@@ -75,7 +75,7 @@ class HqlCarRepositoryTest {
 
 
     @Test
-    void findAll() {
+    void whenFindAll() {
         Car car1 = new Car();
         car1.setName("car1");
         car1.setEngine(new Engine());
@@ -102,7 +102,7 @@ class HqlCarRepositoryTest {
     }
 
     @Test
-    void update() {
+    void whenUpdate() {
         Car car1 = new Car();
         car1.setName("car1");
         car1.setEngine(new Engine());
@@ -124,7 +124,7 @@ class HqlCarRepositoryTest {
     }
 
     @Test
-    void delete() {
+    void whenDelete() {
         Car car1 = new Car();
         car1.setName("car1");
         car1.setEngine(new Engine());
@@ -133,6 +133,7 @@ class HqlCarRepositoryTest {
 
         store.add(car1);
         Optional<Car> fromDb = store.findById(car1.getId());
+        assertThat(fromDb).isPresent();
         store.delete(fromDb.get());
 
         List<Car> carsFromDb = store.findAll();

@@ -61,7 +61,7 @@ public class PostUsage {
                     .forEach(System.out::println);
             userRepository.findById(user.getId())
                     .ifPresent(System.out::println);
-            userRepository.findByLogin("admin")
+            userRepository.findByLoginAndPassword("admin")
                     .ifPresent(System.out::println);
             user.setPassword("password");
             userRepository.update(user);

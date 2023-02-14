@@ -56,7 +56,7 @@ public class Post {
     /**
      * Список изменений цены
      */
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @Fetch(FetchMode.SUBSELECT)
     @JoinColumn(name = "post_id")
@@ -77,7 +77,7 @@ public class Post {
     /**
      * Фотографии автомобиля
      */
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @Fetch(FetchMode.SUBSELECT)
     @JoinColumn(name = "post_id")

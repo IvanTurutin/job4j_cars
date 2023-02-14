@@ -15,7 +15,7 @@ import java.util.Optional;
 public class HqlPriceHistoryRepository implements PriceHistoryRepository {
     private final CrudRepository crudRepository;
 
-    public static final String MODEL = "Post";
+    public static final String MODEL = "PriceHistory";
     public static final String ID = "fId";
 
     public static final String DELETE_STATEMENT = String.format(
@@ -25,7 +25,7 @@ public class HqlPriceHistoryRepository implements PriceHistoryRepository {
     public static final String FIND_ALL_STATEMENT = String.format("from %s", MODEL);
     public static final String FIND_BY_ID_STATEMENT = FIND_ALL_STATEMENT + String.format(" where id = :%s", ID);
     public static final String FIND_BY_POST_STATEMENT = FIND_ALL_STATEMENT
-            + String.format(" where auto_user_id = :%s", ID);
+            + String.format(" where post_id = :%s", ID);
     public static final String TRUNCATE_TABLE = String.format("DELETE FROM %s", MODEL);
 
     @Override

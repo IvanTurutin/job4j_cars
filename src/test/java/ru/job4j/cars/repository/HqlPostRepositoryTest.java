@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.job4j.cars.Main;
+import ru.job4j.cars.config.HibernateConfiguration;
 import ru.job4j.cars.model.*;
 
 import java.time.LocalDateTime;
@@ -31,7 +31,7 @@ class HqlPostRepositoryTest {
 
     @BeforeAll
     public static void initStore() {
-        CrudRepository cr = new SimpleCrudRepository(new Main().sf());
+        CrudRepository cr = new SimpleCrudRepository(new HibernateConfiguration().sf());
         store = new HqlPostRepository(cr);
         store.truncateTable();
 
@@ -93,7 +93,7 @@ class HqlPostRepositoryTest {
     }
 
     @Test
-    void add() {
+    void whenAdd() {
         System.out.println("post = " + post);
 
         store.add(post);
@@ -115,7 +115,7 @@ class HqlPostRepositoryTest {
     }
 
     @Test
-    void update() {
+    void whenUpdate() {
         System.out.println(post);
         store.add(post);
         System.out.println(post);
@@ -135,7 +135,7 @@ class HqlPostRepositoryTest {
     }
 
     @Test
-    void delete() {
+    void whenDelete() {
         System.out.println(post);
         store.add(post);
         System.out.println(post);
@@ -145,22 +145,24 @@ class HqlPostRepositoryTest {
     }
 
     @Test
-    void findAllOrderById() {
+    void whenFindAllOrderById() {
         System.out.println(post);
         store.add(post);
         System.out.println(post);
 
         List<Post> posts = store.findAllOrderById();
+        posts.forEach(System.out::println);
         assertThat(posts).isNotEmpty().hasSize(1).contains(post);
     }
 
     @Test
-    void findByUser() {
+    void whenFindByUser() {
         System.out.println(post);
         store.add(post);
         System.out.println(post);
 
         List<Post> postOptional = store.findByUser(user);
+        postOptional.forEach(System.out::println);
         assertThat(postOptional).isNotEmpty().hasSize(1).contains(post);
 
         postOptional = store.findByUser(user2);
@@ -168,11 +170,12 @@ class HqlPostRepositoryTest {
     }
 
     @Test
-    void findLastDays() {
+    void whenFindLastDays() {
         post.setCreated(LocalDateTime.now().minusDays(2));
         store.add(post);
 
         List<Post> posts = store.findLastDays(3);
+        posts.forEach(System.out::println);
         assertThat(posts).isNotEmpty().hasSize(1).contains(post);
 
         posts = store.findLastDays(1);
@@ -180,9 +183,10 @@ class HqlPostRepositoryTest {
     }
 
     @Test
-    void findWithPhoto() {
+    void whenFindWithPhoto() {
         store.add(post);
         List<Post> posts = store.findWithPhoto();
+        posts.forEach(System.out::println);
         assertThat(posts).isNotEmpty().hasSize(1).contains(post);
         post.setFiles(new ArrayList<>());
         store.update(post);
@@ -191,9 +195,10 @@ class HqlPostRepositoryTest {
     }
 
     @Test
-    void findCarName() {
+    void whenFindCarName() {
         store.add(post);
         List<Post> posts = store.findCarName("Car1");
+        posts.forEach(System.out::println);
         assertThat(posts).isNotEmpty().hasSize(1).contains(post);
         posts = store.findCarName("Car2");
         assertThat(posts).isEmpty();

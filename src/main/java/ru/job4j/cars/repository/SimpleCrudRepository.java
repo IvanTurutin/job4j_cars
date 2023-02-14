@@ -67,9 +67,14 @@ public class SimpleCrudRepository implements CrudRepository {
     }
 
     public <T> List<T> query(String query, Class<T> cl) {
-        Function<Session, List<T>> command = session -> session
-                .createQuery(query, cl)
-                .list();
+        Function<Session, List<T>> command = session -> {
+
+            var sq = session
+                    .createQuery(query, cl);
+            var rslt = sq.list();
+            rslt.forEach(System.out::println);
+            return rslt;
+        };
         try {
             return tx(command);
         } catch (Exception e) {
@@ -85,7 +90,9 @@ public class SimpleCrudRepository implements CrudRepository {
             for (Map.Entry<String, Object> arg : args.entrySet()) {
                 sq.setParameter(arg.getKey(), arg.getValue());
             }
-            return sq.list();
+            var rslt = sq.list();
+            rslt.forEach(System.out::println);
+            return rslt;
         };
         try {
             return tx(command);
