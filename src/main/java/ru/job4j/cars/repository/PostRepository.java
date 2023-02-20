@@ -1,7 +1,6 @@
 package ru.job4j.cars.repository;
 
-import ru.job4j.cars.model.Post;
-import ru.job4j.cars.model.User;
+import ru.job4j.cars.model.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,15 +57,35 @@ public interface PostRepository {
 
     /**
      * Осуществляет поиск всех объявлений с фото
-     * @return список объявлений
+     * @return список объявлений, удовлетворяющих запросу
      */
     List<Post> findWithPhoto();
 
     /**
      * Осуществляет поиск объявлений по марке автомобиля
-     * @param carName марка автомобиля
-     * @return список объявлений
+     * @param carModel марка автомобиля
+     * @return список объявлений, удовлетворяющих запросу
      */
-    List<Post> findCarName(String carName);
+    PostRepository findByCarModel(CarModel carModel);
+
+    /**
+     * Осуществляет поиск объявлений по типу кузова
+     * @param body тип кузова
+     * @return список объявлений, удовлетворяющих запросу
+     */
+    PostRepository findByBody(Body body);
+
+    /**
+     * Осуществляет поиск объявлений по типу коробки передач
+     * @param transmission тип коробки передач
+     * @return список объявлений, удовлетворяющих запросу
+     */
+    PostRepository findByTransmission(Transmission transmission);
+
+    /**
+     * Запускает поиск объявлений по набору характеристик автомобиля
+     * @return список объявлений, удовлетворяющих запросу
+     */
+    List<Post> execute();
 
 }

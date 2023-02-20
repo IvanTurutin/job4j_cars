@@ -31,7 +31,6 @@ class HqlPriceHistoryRepositoryTest {
         post.setUser(user);
 
         Car car = new Car();
-        car.setName("Car1");
         Engine engine = new Engine();
         car.setEngine(engine);
         Owner owner = new Owner();

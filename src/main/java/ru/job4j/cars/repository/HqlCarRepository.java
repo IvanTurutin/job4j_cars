@@ -41,7 +41,7 @@ public class HqlCarRepository implements CarRepository {
 
     @Override
     public Optional<Car> add(Car car) {
-        return cr.run(session -> session.persist(car)) ? Optional.of(car) : Optional.empty();
+        return cr.run(session -> session.save(car)) ? Optional.of(car) : Optional.empty();
     }
 
     @Override

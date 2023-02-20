@@ -41,6 +41,10 @@ public class Post {
     private LocalDateTime created = LocalDateTime.now();
     /**
      * Пользователь, создавший объявление
+     * PERSIST,
+     *     MERGE,
+     *     REMOVE,
+     *     REFRESH,
      */
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "auto_user_id")

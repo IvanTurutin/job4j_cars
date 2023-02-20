@@ -28,6 +28,10 @@ class HqlPostRepositoryTest {
     private static User user3;
     private static File file;
     private static File file2;
+    private static CarModel carModel;
+    private static Body body;
+    private static Transmission transmission;
+    private static Car car;
 
     @BeforeAll
     public static void initStore() {
@@ -45,10 +49,18 @@ class HqlPostRepositoryTest {
         user.setLogin("User1");
         post.setUser(user);
 
-        Car car = new Car();
-        car.setName("Car1");
+        body = new Body();
+        body.setName("Body1");
+        carModel = new CarModel();
+        carModel.setName("CarModel1");
+        transmission = new Transmission();
+        transmission.setName("Transmission1");
+        car = new Car();
         engine = new Engine();
         car.setEngine(engine);
+        car.setBody(body);
+        car.setCarModel(carModel);
+        car.setTransmission(transmission);
         owner = new Owner();
         owner.setName("Owner1");
         car.setOwner(owner);
@@ -80,8 +92,11 @@ class HqlPostRepositoryTest {
 
         file = new File();
         file.setName("File1");
+        file.setPath("files/");
         file2 = new File();
         file2.setName("File2");
+        file2.setPath("files/");
+
         ArrayList<File> files = new ArrayList<>(List.of(file, file2));
         post.setFiles(files);
 
@@ -105,8 +120,10 @@ class HqlPostRepositoryTest {
         assertThat(postFromDb.get().getId()).isNotEqualTo(0);
         assertThat(postFromDb.get().getText()).isEqualTo("Post1");
         assertThat(postFromDb.get().getUser().getLogin()).isEqualTo("User1");
-        assertThat(postFromDb.get().getCar().getName()).isEqualTo("Car1");
+        assertThat(postFromDb.get().getCar().getBody().getName()).isEqualTo("Body1");
         assertThat(postFromDb.get().getCar().getEngine().getId()).isEqualTo(engine.getId());
+        assertThat(postFromDb.get().getCar().getCarModel().getName()).isEqualTo("CarModel1");
+        assertThat(postFromDb.get().getCar().getTransmission().getName()).isEqualTo("Transmission1");
         assertThat(postFromDb.get().getCar().getOwner().getName()).isEqualTo("Owner1");
         assertThat(postFromDb.get().getCar().getOwners()).isNotEmpty().hasSize(2).contains(owner, owner2);
         assertThat(postFromDb.get().getPriceHistory()).isNotEmpty().hasSize(2).contains(priceHistory, priceHistory2);
@@ -121,6 +138,8 @@ class HqlPostRepositoryTest {
         System.out.println(post);
         post.setText("Updated");
         File file3 = new File();
+        post.getCar().getCarModel().setName("Updated CarModel1");
+        post.getCar().getOwner().setName("Updated Owner1");
         file3.setName("File3");
         post.getFiles().add(file3);
         System.out.println(post);
@@ -130,6 +149,8 @@ class HqlPostRepositoryTest {
         Optional<Post> postFromDb = store.findById(post.getId());
         System.out.println(postFromDb);
         assertThat(postFromDb.isPresent()).isTrue();
+        assertThat(postFromDb.get().getCar().getCarModel().getName()).isEqualTo("Updated CarModel1");
+        assertThat(postFromDb.get().getCar().getOwner().getName()).isEqualTo("Updated Owner1");
         assertThat(postFromDb.get().getText()).isEqualTo("Updated");
         assertThat(postFromDb.get().getFiles()).isNotEmpty().hasSize(3);
     }
@@ -195,12 +216,91 @@ class HqlPostRepositoryTest {
     }
 
     @Test
-    void whenFindCarName() {
+    void whenFindByCarModel() {
         store.add(post);
-        List<Post> posts = store.findCarName("Car1");
+        List<Post> posts = store.findByCarModel(carModel).execute();
         posts.forEach(System.out::println);
         assertThat(posts).isNotEmpty().hasSize(1).contains(post);
-        posts = store.findCarName("Car2");
+        assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo("CarModel1");
+
+        CarModel carModel2 = new CarModel();
+        carModel2.setName("CarModel2");
+        posts = store.findByCarModel(carModel2).execute();
         assertThat(posts).isEmpty();
+    }
+
+    @Test
+    void whenFindByBody() {
+        store.add(post);
+        List<Post> posts = store.findByBody(body).execute();
+        posts.forEach(System.out::println);
+        assertThat(posts).isNotEmpty().hasSize(1).contains(post);
+        assertThat(posts.get(0).getCar().getBody().getName()).isEqualTo("Body1");
+        Body body2 = new Body();
+        body2.setName("Body2");
+        posts = store.findByBody(body2).execute();
+        assertThat(posts).isEmpty();
+    }
+
+    @Test
+    void whenFindByTransmission() {
+        store.add(post);
+        List<Post> posts = store.findByTransmission(transmission).execute();
+        posts.forEach(System.out::println);
+        assertThat(posts).isNotEmpty().hasSize(1).contains(post);
+        assertThat(posts.get(0).getCar().getTransmission().getName()).isEqualTo("Transmission1");
+        Transmission transmission2 = new Transmission();
+        transmission2.setName("Transmission2");
+        posts = store.findByTransmission(transmission2).execute();
+        assertThat(posts).isEmpty();
+    }
+
+    @Test
+    void whenFindByBodyAndCarModelAndTransmission() {
+        store.add(post);
+        List<Post> posts = store.findByBody(body).findByCarModel(carModel).findByTransmission(transmission).execute();
+        posts.forEach(System.out::println);
+        assertThat(posts).isNotEmpty().hasSize(1).contains(post);
+        assertThat(posts.get(0).getCar().getBody().getName()).isEqualTo("Body1");
+        assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo("CarModel1");
+        assertThat(posts.get(0).getCar().getTransmission().getName()).isEqualTo("Transmission1");
+
+        Transmission transmission2 = new Transmission();
+        transmission2.setName("Transmission2");
+        posts = store.findByBody(body).findByCarModel(carModel).findByTransmission(transmission2).execute();
+        assertThat(posts).isEmpty();
+
+        posts = store.findByBody(body).findByCarModel(carModel).findByTransmission(transmission).execute();
+        posts.forEach(System.out::println);
+        assertThat(posts).isNotEmpty().hasSize(1).contains(post);
+        assertThat(posts.get(0).getCar().getBody().getName()).isEqualTo("Body1");
+        assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo("CarModel1");
+        assertThat(posts.get(0).getCar().getTransmission().getName()).isEqualTo("Transmission1");
+
+    }
+
+    @Test
+    void whenFindBySubscribedUser() {
+        System.out.println("post1 before = " + post);
+
+        store.add(post);
+        System.out.println("post1 after = " + post);
+
+        Post post2 = new Post();
+        post2.setUsers(List.of(user, user2));
+        post2.setUser(user3);
+        post2.setText("Text for post2");
+        post2.setCar(car);
+        post2.setPriceHistory(List.of(priceHistory));
+        System.out.println("post2 before = " + post2);
+        store.add(post2);
+        System.out.println("post2 after = " + post2);
+        List<Post> postsDB = store.findBySubscribedUser(user2);
+        System.out.println("==========");
+        postsDB.forEach(System.out::println);
+        assertThat(postsDB).isNotEmpty().hasSize(2).contains(post, post2);
+        postsDB = store.findBySubscribedUser(user);
+        assertThat(postsDB).isNotEmpty().hasSize(1).contains(post2);
+
     }
 }

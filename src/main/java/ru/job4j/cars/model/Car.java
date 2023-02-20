@@ -31,9 +31,25 @@ public class Car {
     private int id;
 
     /**
+     * Тип кузова автомобиля
+     */
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "body_id")
+    private Body body;
+
+    /**
      * Модель автомобиля
      */
-    private String name;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "car_model_id")
+    private CarModel carModel;
+
+    /**
+     * Тип коробки передач автомобиля
+     */
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "transmission_id")
+    private Transmission transmission;
 
     /**
      * Двигатель автомобиля

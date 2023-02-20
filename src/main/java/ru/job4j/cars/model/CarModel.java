@@ -8,17 +8,18 @@ import lombok.ToString;
 import javax.persistence.*;
 
 /**
- * Модель данных файла
+ * Модель марка автомобиля
  */
 @Entity
-@Table(name = "engines")
+@Table(name = "car_models")
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class File {
+public class CarModel {
+
     /**
-     * Идентификатор файла
+     * Идентификатор марки автомобиля
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +27,8 @@ public class File {
     private int id;
 
     /**
-     * Имя файла
+     * Название марки
      */
     private String name;
 
-    /**
-     * Путь к файлу
-     */
-    private String path;
 }
