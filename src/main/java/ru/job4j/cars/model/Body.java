@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Body {
+public class Body implements SearchAttribute {
 
     /**
      * Идентификатор типа кузова
@@ -31,4 +31,8 @@ public class Body {
      */
     private String name;
 
+    @Override
+    public String getType() {
+        return this.getClass().getSimpleName().toLowerCase();
+    }
 }

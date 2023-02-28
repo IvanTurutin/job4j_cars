@@ -25,4 +25,9 @@ public class User {
      * Пароль пользователя
      */
     private String password;
+
+    /**
+     * Имя пользователя
+     */
+    private String name;
 }

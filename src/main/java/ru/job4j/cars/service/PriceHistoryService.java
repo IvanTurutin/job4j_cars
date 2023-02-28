@@ -1,4 +1,4 @@
-package ru.job4j.cars.repository;
+package ru.job4j.cars.service;
 
 import ru.job4j.cars.model.Post;
 import ru.job4j.cars.model.PriceHistory;
@@ -7,32 +7,32 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Репозиторий изменения цены
- * @see ru.job4j.cars.model.PriceHistory
+ * Сервис изменения цены
+ * @see PriceHistory
  */
-public interface PriceHistoryRepository {
+public interface PriceHistoryService {
     /**
-     * Сохраняет изменение цены в базе.
+     * Обрабатывает запрос на сохранение изменение цены.
      * @param priceHistory изменение цены.
-     * @return изменение цены обернутое в Optional если успех, и Optional.empty() если неудача.
+     * @return true если добавлен, false если не добавлен
      */
-    Optional<PriceHistory> create(PriceHistory priceHistory);
+    boolean create(PriceHistory priceHistory);
 
     /**
-     * Удаляет изменение цены по id.
+     * Обрабатывает запрос на удаление изменения цены.
      * @param priceHistoryId ID
      * @return true если удален, false если не удален
      */
     boolean delete(int priceHistoryId);
 
     /**
-     * Ищет изменение цены по ID
+     * Обрабатывает запрос на поиск цены
      * @return изменение цены обернутое в Optional если найдено, и Optional.empty() если не найдено.
      */
     Optional<PriceHistory> findById(int id);
 
     /**
-     * Список изменений цены, принадлежащих объявлению
+     * Обрабатывает запрос на поиск изменений цены принадлежащих объявлению
      * @param post объявление
      * @return список объявлений.
      */

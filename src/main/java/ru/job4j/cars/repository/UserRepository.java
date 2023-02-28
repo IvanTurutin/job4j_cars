@@ -17,19 +17,19 @@ public interface UserRepository {
      * @return пользователь с id обернутый в Optional если пользователь успешно добавлен,
      * Optional.empty() если пользователь не добавлен.
      */
-    User create(User user);
+    Optional<User> create(User user);
 
     /**
      * Обновить в базе пользователя.
      * @param user пользователь.
      */
-    void update(User user);
+    boolean update(User user);
 
     /**
      * Удалить пользователя по id.
      * @param userId ID
      */
-    void delete(int userId);
+    boolean delete(int userId);
 
     /**
      * Список пользователь отсортированных по id.

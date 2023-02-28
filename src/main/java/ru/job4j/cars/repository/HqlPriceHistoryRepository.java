@@ -29,14 +29,15 @@ public class HqlPriceHistoryRepository implements PriceHistoryRepository {
     public static final String TRUNCATE_TABLE = String.format("DELETE FROM %s", MODEL);
 
     @Override
-    public PriceHistory create(PriceHistory priceHistory) {
-        crudRepository.run(session -> session.persist(priceHistory));
-        return priceHistory;
+    public Optional<PriceHistory> create(PriceHistory priceHistory) {
+        return crudRepository.run(session -> session.persist(priceHistory))
+                ? Optional.of(priceHistory)
+                : Optional.empty();
     }
 
     @Override
-    public void delete(int priceHistoryId) {
-        crudRepository.run(
+    public boolean delete(int priceHistoryId) {
+        return crudRepository.query(
                 DELETE_STATEMENT,
                 Map.of(ID, priceHistoryId)
         );

@@ -1,4 +1,4 @@
-package ru.job4j.cars.repository;
+package ru.job4j.cars.service;
 
 import ru.job4j.cars.model.*;
 
@@ -6,69 +6,74 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Репозиторий объявлений
- * @see ru.job4j.cars.model.Post
+ * Сервис объявлений
+ * @see Post
  */
-public interface PostRepository {
+public interface PostService {
     /**
-     * Сохраняет объявление в базе.
+     * Обрабатывает запрос на сохранение объявления.
      * @param post объявление.
-     * @return объявление в Optional если успех, и Optional.empty() если неудача
+     * @return true если успех, и false если неудача
      */
-    Optional<Post> add(Post post);
+    boolean add(Post post);
 
     /**
-     * Обновляет в базе объявление.
+     * Обрабатывает обновление объявления.
      * @param post объявление.
-     * @return true если обновлен, false если не обновлено
+     * @return true если успех, и false если неудача
      */
     boolean update(Post post);
 
     /**
-     * Удаляет объявление по id.
+     * Обрабатывает запрос на удаление объявления.
      * @param postId ID
-     * @return true если удален, false если не удален
+     * @return true если успех, и false если неудача
      */
     boolean delete(int postId);
 
     /**
-     * Список объявлений отсортированных по id.
+     * Обрабатывает запрос на поиск всех объявлений.
      * @return список объявлений.
      */
-    List<Post> findAllOrderById();
+    List<Post> findAll();
+
+
+    List<Post> findAll(User user);
 
     /**
-     * Найти объявление по ID
+     * Обрабатывает запрос на поиск объявления по ID
      * @return объявление обернутое в Optional если найдено, и Optional.empty() если не найдено.
      */
     Optional<Post> findById(int id);
 
     /**
-     * Список объявлений, принадлежащих пользователю
+     * Обрабатывает запрос на поиск списка объявлений, принадлежащих пользователю
      * @param user пользователь
      * @return список объявлений.
      */
     List<Post> findByUser(User user);
 
     /**
-     * Осуществляет поиск объявлений за последние дни
+     * Обрабатывает запрос на поиск объявлений за последние дни
      * @param days количество дней, за которые требуется найти объявления
      * @return список объявлений удовлетворяющих требованию
      */
     List<Post> findLastDays(int days);
 
     /**
-     * Осуществляет поиск всех объявлений на которые подписан пользователь
+     * Обрабатывает запрос на поиск всех объявлений на которые подписан пользователь
      * @param user пользователь для которого осуществляется поиск
      * @return список объявлений
      */
     List<Post> findBySubscribedUser(User user);
 
     /**
-     * Осуществляет поиск объявлений удовлетворяющих атрибутам поиска
+     * Обрабатывает запрос на поиск объявлений удовлетворяющих атрибутам поиска
      * @param characts список атрибутов поиска
      * @return список объявлений
      */
     List<Post> findBySearchAttributes(List<SearchAttribute> characts);
+
+
 
 }

@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Transmission {
+public class Transmission implements SearchAttribute {
 
     /**
      * Идентификатор типа коробки передач
@@ -30,5 +30,10 @@ public class Transmission {
      * Название типа коробки передач
      */
     private String name;
+
+    @Override
+    public String getType() {
+        return this.getClass().getSimpleName().toLowerCase();
+    }
 
 }

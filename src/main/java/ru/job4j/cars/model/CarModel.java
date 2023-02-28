@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class CarModel {
+public class CarModel implements SearchAttribute {
 
     /**
      * Идентификатор марки автомобиля
@@ -30,5 +30,13 @@ public class CarModel {
      * Название марки
      */
     private String name;
+
+    @Override
+    public String getType() {
+/*
+        return this.getClass().getSimpleName().toLowerCase();
+*/
+        return "carModel";
+    }
 
 }

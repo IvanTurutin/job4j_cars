@@ -1,9 +1,6 @@
 package ru.job4j.cars.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -16,7 +13,16 @@ import javax.persistence.*;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class File {
+@NoArgsConstructor
+public class File implements SearchAttribute {
+
+    public static final String FILES = "files";
+
+    public File(String name, String path) {
+        this.name = name;
+        this.path = path;
+    }
+
     /**
      * Идентификатор файла
      */
@@ -34,4 +40,9 @@ public class File {
      * Путь к файлу
      */
     private String path;
+
+    @Override
+    public String getType() {
+        return FILES;
+    }
 }

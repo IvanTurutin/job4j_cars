@@ -206,60 +206,60 @@ class HqlPostRepositoryTest {
     @Test
     void whenFindWithPhoto() {
         store.add(post);
-        List<Post> posts = store.findWithPhoto();
+        List<Post> posts = store.findBySearchAttributes(List.of(new File()));
         posts.forEach(System.out::println);
         assertThat(posts).isNotEmpty().hasSize(1).contains(post);
         post.setFiles(new ArrayList<>());
         store.update(post);
-        posts = store.findWithPhoto();
+        posts = store.findBySearchAttributes(List.of(new File()));
         assertThat(posts).isEmpty();
     }
 
     @Test
     void whenFindByCarModel() {
         store.add(post);
-        List<Post> posts = store.findByCarModel(carModel).execute();
+        List<Post> posts = store.findBySearchAttributes(List.of(carModel));
         posts.forEach(System.out::println);
         assertThat(posts).isNotEmpty().hasSize(1).contains(post);
         assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo("CarModel1");
 
         CarModel carModel2 = new CarModel();
         carModel2.setName("CarModel2");
-        posts = store.findByCarModel(carModel2).execute();
+        posts = store.findBySearchAttributes(List.of(carModel2));
         assertThat(posts).isEmpty();
     }
 
     @Test
     void whenFindByBody() {
         store.add(post);
-        List<Post> posts = store.findByBody(body).execute();
+        List<Post> posts = store.findBySearchAttributes(List.of(body));
         posts.forEach(System.out::println);
         assertThat(posts).isNotEmpty().hasSize(1).contains(post);
         assertThat(posts.get(0).getCar().getBody().getName()).isEqualTo("Body1");
         Body body2 = new Body();
         body2.setName("Body2");
-        posts = store.findByBody(body2).execute();
+        posts = store.findBySearchAttributes(List.of(body2));
         assertThat(posts).isEmpty();
     }
 
     @Test
     void whenFindByTransmission() {
         store.add(post);
-        List<Post> posts = store.findByTransmission(transmission).execute();
+        List<Post> posts = store.findBySearchAttributes(List.of(transmission));
         posts.forEach(System.out::println);
         assertThat(posts).isNotEmpty().hasSize(1).contains(post);
         assertThat(posts.get(0).getCar().getTransmission().getName()).isEqualTo("Transmission1");
         Transmission transmission2 = new Transmission();
         transmission2.setName("Transmission2");
-        posts = store.findByTransmission(transmission2).execute();
+        posts = store.findBySearchAttributes(List.of(transmission2));
         assertThat(posts).isEmpty();
     }
 
     @Test
     void whenFindByBodyAndCarModelAndTransmission() {
         store.add(post);
-        List<Post> posts = store.findByBody(body).findByCarModel(carModel).findByTransmission(transmission).execute();
-        posts.forEach(System.out::println);
+        List<SearchAttribute> cc = List.of(body, carModel, transmission);
+        List<Post> posts = store.findBySearchAttributes(cc);
         assertThat(posts).isNotEmpty().hasSize(1).contains(post);
         assertThat(posts.get(0).getCar().getBody().getName()).isEqualTo("Body1");
         assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo("CarModel1");
@@ -267,16 +267,9 @@ class HqlPostRepositoryTest {
 
         Transmission transmission2 = new Transmission();
         transmission2.setName("Transmission2");
-        posts = store.findByBody(body).findByCarModel(carModel).findByTransmission(transmission2).execute();
+        cc = List.of(body, carModel, transmission2);
+        posts = store.findBySearchAttributes(cc);
         assertThat(posts).isEmpty();
-
-        posts = store.findByBody(body).findByCarModel(carModel).findByTransmission(transmission).execute();
-        posts.forEach(System.out::println);
-        assertThat(posts).isNotEmpty().hasSize(1).contains(post);
-        assertThat(posts.get(0).getCar().getBody().getName()).isEqualTo("Body1");
-        assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo("CarModel1");
-        assertThat(posts.get(0).getCar().getTransmission().getName()).isEqualTo("Transmission1");
-
     }
 
     @Test

@@ -41,9 +41,8 @@ public class HqlUserRepository implements UserRepository {
      * Optional.empty() если пользователь не добавлен.
      */
     @Override
-    public User create(User user) {
-        crudRepository.run(session -> session.persist(user));
-        return user;
+    public Optional<User> create(User user) {
+        return crudRepository.run(session -> session.persist(user)) ? Optional.of(user) : Optional.empty();
     }
 
     /**
@@ -51,8 +50,8 @@ public class HqlUserRepository implements UserRepository {
      * @param user пользователь.
      */
     @Override
-    public void update(User user) {
-        crudRepository.run(session -> session.merge(user));
+    public boolean update(User user) {
+        return crudRepository.run(session -> session.merge(user));
     }
 
     /**
@@ -60,8 +59,8 @@ public class HqlUserRepository implements UserRepository {
      * @param userId ID
      */
     @Override
-    public void delete(int userId) {
-        crudRepository.run(
+    public boolean delete(int userId) {
+        return crudRepository.query(
                 DELETE_STATEMENT,
                 Map.of(ID, userId)
         );
