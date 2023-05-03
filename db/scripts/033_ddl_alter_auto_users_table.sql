@@ -1,0 +1,1 @@
+ALTER TABLE auto_users ADD COLUMN IF NOT EXISTS timezone_id int REFERENCES timezones(id);

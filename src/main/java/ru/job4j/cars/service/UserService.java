@@ -7,7 +7,7 @@ import java.util.Optional;
 
 /**
  * Сервис пользователей
- * @see User
+ * @see ru.job4j.cars.model.User
  */
 public interface UserService {
 
@@ -20,9 +20,10 @@ public interface UserService {
 
     /**
      * Обрабатывает запрос на обновление пользователя.
+     *
      * @param user пользователь.
      */
-    boolean update(User user);
+    Optional<User> update(User user);
 
     /**
      * Обрабатывает запрос на удаление пользователя.

@@ -58,4 +58,6 @@ public interface UserRepository {
      * @return Optional or user.
      */
     Optional<User> findByLoginAndPassword(String login, String password);
+
+    List<User> findAll();
 }
