@@ -8,7 +8,7 @@ import javax.persistence.*;
  * Модель данных файла
  */
 @Entity
-@Table(name = "engines")
+@Table(name = "files")
 @Getter
 @Setter
 @ToString
@@ -16,6 +16,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class File implements SearchAttribute {
 
+    /**
+     * Название типа аттрибута поиска для клаcса File
+     */
     public static final String FILES = "files";
 
     public File(String name, String path) {
@@ -40,7 +43,11 @@ public class File implements SearchAttribute {
      * Путь к файлу
      */
     private String path;
-
+/*
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_id")
+    private Post post;
+*/
     @Override
     public String getType() {
         return FILES;

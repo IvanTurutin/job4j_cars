@@ -3,6 +3,7 @@ package ru.job4j.cars.service;
 import ru.job4j.cars.dto.FileDto;
 import ru.job4j.cars.model.File;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,7 +16,28 @@ public interface FileService {
      * @param fileDto DTO файла для добавления
      * @return файл в Optional если успех, и Optional.empty() если неудача
      */
-    Optional<File> save(FileDto fileDto);
+    Optional<FileDto> save(FileDto fileDto);
+
+    /**
+     * Преобразует список из FileDto в список File при этом сохраняет все несохраненные файлы на диске
+     * @param fileDtos список из FileDto
+     * @return список File
+     */
+    List<File> fileDtoListToFileList(List<FileDto> fileDtos);
+
+    /**
+     * Преобразует список из File в список FileDto при этом загружает все файлы с диска
+     * @param files список из File
+     * @return список FileDto
+     */
+    List<FileDto> fileListToFileDtoList(List<File> files);
+
+    /**
+     * Преобразует список из File в список FileDto при этом не загружает файлы с диска
+     * @param files список из File
+     * @return список FileDto
+     */
+    List<FileDto> fileListToFileDtoListLight(List<File> files);
 
     /**
      * Обрабатывает запрос на поиск файла по id

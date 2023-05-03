@@ -33,7 +33,7 @@ public class HqlFileRepository implements FileRepository {
 
     @Override
     public Optional<File> save(File file) {
-        return cr.run(session -> session.persist(file)) ? Optional.of(file) : Optional.empty();
+        return cr.run(session -> session.save(file)) ? Optional.of(file) : Optional.empty();
     }
 
     @Override
