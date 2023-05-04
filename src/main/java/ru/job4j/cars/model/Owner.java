@@ -3,8 +3,6 @@ package ru.job4j.cars.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-
 import javax.persistence.*;
 
 /**
@@ -14,7 +12,6 @@ import javax.persistence.*;
 @Table(name = "owners")
 @Getter
 @Setter
-@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Owner {
 
@@ -31,4 +28,12 @@ public class Owner {
      */
     private String name;
 
+    @Override
+    public String toString() {
+
+        return "Owner{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + '}';
+    }
 }

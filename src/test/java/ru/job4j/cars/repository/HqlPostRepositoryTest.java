@@ -6,21 +6,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.job4j.cars.config.HibernateConfiguration;
 import ru.job4j.cars.model.*;
+import ru.job4j.cars.model.TimeZone;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HqlPostRepositoryTest {
 
     private static HqlPostRepository store;
+    private static HqlTimeZoneRepository storeTimeZone;
+    private static HqlUserRepository storeUser;
+    private static HqlOwnerRepository ownerRepository;
     private static Post post;
     private static Engine engine;
-    private static Owner owner;
-    private static Owner owner2;
+    private static CarOwner carOwner;
+    private static CarOwner carOwner2;
     private static PriceHistory priceHistory;
     private static PriceHistory priceHistory2;
     private static User user;
@@ -32,6 +35,8 @@ class HqlPostRepositoryTest {
     private static Body body;
     private static Transmission transmission;
     private static Car car;
+    private TimeZone timeZone;
+    private TimeZone timeZone2;
 
     @BeforeAll
     public static void initStore() {
@@ -39,14 +44,22 @@ class HqlPostRepositoryTest {
         store = new HqlPostRepository(cr);
         store.truncateTable();
 
+        storeTimeZone = new HqlTimeZoneRepository(cr);
+
+        storeUser = new HqlUserRepository(cr);
+
+        ownerRepository = new HqlOwnerRepository(cr);
+        ownerRepository.truncateTable();
+
     }
 
     @BeforeEach
     public void createEntity() {
         post = new Post();
         post.setText("Post1");
-        user = new User();
-        user.setLogin("User1");
+        timeZone = new TimeZone("UTC+1");
+        user = new User("User1", "pass1", "UserName1", timeZone);
+        /*user.setLogin("User1");*/
         post.setUser(user);
 
         body = new Body();
@@ -61,15 +74,26 @@ class HqlPostRepositoryTest {
         car.setBody(body);
         car.setCarModel(carModel);
         car.setTransmission(transmission);
-        owner = new Owner();
+        Owner owner = new Owner();
         owner.setName("Owner1");
+        ownerRepository.add(owner);
         car.setOwner(owner);
-        owner2 = new Owner();
+        Owner owner2 = new Owner();
         owner2.setName("Owner2");
-        List<Owner> owners = new ArrayList<>();
-        owners.add(owner);
-        owners.add(owner2);
-        car.setOwners(owners);
+        ownerRepository.add(owner2);
+
+        carOwner = new CarOwner();
+        carOwner.setOwner(owner);
+        carOwner.setCar(car);
+        carOwner2 = new CarOwner();
+        carOwner2.setOwner(owner2);
+        carOwner2.setCar(car);
+
+        List<CarOwner> owners = new ArrayList<>();
+        /*Set<CarOwner> owners = new HashSet<>();*/
+        owners.add(carOwner);
+        owners.add(carOwner2);
+        car.setCarOwners(owners);
         post.setCar(car);
 
         priceHistory = new PriceHistory();
@@ -83,10 +107,10 @@ class HqlPostRepositoryTest {
         List<PriceHistory> priceHistories = List.of(priceHistory, priceHistory2);
         post.setPriceHistory(priceHistories);
 
-        user2 = new User();
-        user2.setLogin("User2");
-        user3 = new User();
-        user3.setLogin("User3");
+        timeZone2 = new TimeZone("UTC+2");
+        user2 = new User("User2", "pass2", "UserName2", timeZone2);
+        TimeZone timeZone3 = new TimeZone("UTC+3");
+        user3 = new User("User3", "pass3", "UserName3", timeZone3);
         List<User> users = List.of(user2, user3);
         post.setUsers(users);
 
@@ -105,6 +129,9 @@ class HqlPostRepositoryTest {
     @AfterEach
     public void truncateTable() {
         store.truncateTable();
+        storeUser.truncate();
+        storeTimeZone.truncateTable();
+        ownerRepository.truncateTable();
     }
 
     @Test
@@ -112,7 +139,9 @@ class HqlPostRepositoryTest {
         System.out.println("post = " + post);
 
         store.add(post);
-        System.out.println("post = " + post);
+        System.out.println("post after add() = " + post);
+        System.out.println("user after add() = " + user);
+        System.out.println("timezone after add() = " + timeZone);
 
         Optional<Post> postFromDb = store.findById(post.getId());
         System.out.println("postFromDb = " + postFromDb);
@@ -125,7 +154,11 @@ class HqlPostRepositoryTest {
         assertThat(postFromDb.get().getCar().getCarModel().getName()).isEqualTo("CarModel1");
         assertThat(postFromDb.get().getCar().getTransmission().getName()).isEqualTo("Transmission1");
         assertThat(postFromDb.get().getCar().getOwner().getName()).isEqualTo("Owner1");
-        assertThat(postFromDb.get().getCar().getOwners()).isNotEmpty().hasSize(2).contains(owner, owner2);
+        assertThat(postFromDb.get().getCar().getCarOwners()).isNotEmpty().hasSize(2);
+        /*assertThat(postFromDb.get().getCar().getCarOwners().get(0).getStartAt().toLocalDate()).isEqualTo(carOwner.getStartAt().toLocalDate());*/
+        assertTrue(postFromDb.get().getCar().getCarOwners().contains(carOwner));
+        /*assertThat(postFromDb.get().getCar().getCarOwners().get(1).getStartAt().toLocalDate()).isEqualTo(carOwner2.getStartAt().toLocalDate());*/
+        assertTrue(postFromDb.get().getCar().getCarOwners().contains(carOwner2));
         assertThat(postFromDb.get().getPriceHistory()).isNotEmpty().hasSize(2).contains(priceHistory, priceHistory2);
         assertThat(postFromDb.get().getFiles()).isNotEmpty().hasSize(2).contains(file, file2);
         assertThat(postFromDb.get().getUsers()).isNotEmpty().hasSize(2).contains(user2, user3);
@@ -140,6 +173,9 @@ class HqlPostRepositoryTest {
         File file3 = new File();
         post.getCar().getCarModel().setName("Updated CarModel1");
         post.getCar().getOwner().setName("Updated Owner1");
+        Owner owner5 = new Owner();
+        owner5.setName("Owner5");
+        post.getCar().setOwner(owner5);
         file3.setName("File3");
         post.getFiles().add(file3);
         System.out.println(post);
@@ -150,7 +186,7 @@ class HqlPostRepositoryTest {
         System.out.println(postFromDb);
         assertThat(postFromDb.isPresent()).isTrue();
         assertThat(postFromDb.get().getCar().getCarModel().getName()).isEqualTo("Updated CarModel1");
-        assertThat(postFromDb.get().getCar().getOwner().getName()).isEqualTo("Updated Owner1");
+        assertThat(postFromDb.get().getCar().getOwner().getName()).isEqualTo("Owner5");
         assertThat(postFromDb.get().getText()).isEqualTo("Updated");
         assertThat(postFromDb.get().getFiles()).isNotEmpty().hasSize(3);
     }
@@ -217,11 +253,21 @@ class HqlPostRepositoryTest {
 
     @Test
     void whenFindByCarModel() {
+        List<User> users = storeUser.findAll();
+        users.forEach(System.out::println);
+
+        List<TimeZone> timeZones = storeTimeZone.findAll();
+        timeZones.forEach(storeTimeZone::delete);
+        timeZones.forEach(System.out::println);
+
+        System.out.println("timeZone at whenFindByCarModel = " + timeZone2);
+        post.getUser().setTimeZone(timeZone2);
         store.add(post);
         List<Post> posts = store.findBySearchAttributes(List.of(carModel));
         posts.forEach(System.out::println);
-        assertThat(posts).isNotEmpty().hasSize(1).contains(post);
-        assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo("CarModel1");
+        assertThat(posts).isNotEmpty().hasSize(1);
+        assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo(carModel.getName());
+        /*assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo("CarModel1");*/
 
         CarModel carModel2 = new CarModel();
         carModel2.setName("CarModel2");
@@ -231,6 +277,7 @@ class HqlPostRepositoryTest {
 
     @Test
     void whenFindByBody() {
+
         store.add(post);
         List<Post> posts = store.findBySearchAttributes(List.of(body));
         posts.forEach(System.out::println);

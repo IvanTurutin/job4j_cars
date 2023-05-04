@@ -35,7 +35,7 @@ public class HqlOwnerRepository implements OwnerRepository {
 
     @Override
     public Optional<Owner> add(Owner owner) {
-        return cr.run(session -> session.persist(owner)) ? Optional.of(owner) : Optional.empty();
+        return cr.run(session -> session.save(owner)) ? Optional.of(owner) : Optional.empty();
     }
 
     @Override

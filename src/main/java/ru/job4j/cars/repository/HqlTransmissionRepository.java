@@ -35,7 +35,7 @@ public class HqlTransmissionRepository implements TransmissionRepository {
 
     @Override
     public Optional<Transmission> add(Transmission transmission) {
-        return cr.run(session -> session.persist(transmission)) ? Optional.of(transmission) : Optional.empty();
+        return cr.run(session -> session.save(transmission)) ? Optional.of(transmission) : Optional.empty();
     }
 
     @Override

@@ -5,45 +5,64 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.job4j.cars.config.HibernateConfiguration;
 import ru.job4j.cars.model.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import java.time.LocalDateTime;
+import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /*@SpringBootTest*/
 class HqlCarRepositoryTest {
 
     private static HqlCarRepository store;
+    private static HqlOwnerRepository ownerRepository;
     private static Engine engine;
     private static Body body;
     private static CarModel carModel;
     private static Transmission transmission;
     private static Owner owner;
     private static Owner owner2;
-    private static List<Owner> owners;
+    private static CarOwner carOwner;
+    private static CarOwner carOwner2;
+    private static List<CarOwner> owners;
+    //private static Set<CarOwner> owners;
 
     @BeforeAll
     public static void initStore() {
         CrudRepository cr = new SimpleCrudRepository(new HibernateConfiguration().sf());
         store = new HqlCarRepository(cr);
         store.truncateTable();
+        ownerRepository = new HqlOwnerRepository(cr);
+        ownerRepository.truncateTable();
 
         HqlEngineRepository engineRepository = new HqlEngineRepository(cr);
         engineRepository.truncateTable();
         engine = new Engine();
+        engine.setName("Engine 1");
 
         HqlOwnerRepository ownerRepository = new HqlOwnerRepository(cr);
         ownerRepository.truncateTable();
         owner = new Owner();
         owner.setName("Owner 1");
+        ownerRepository.add(owner);
         owner2 = new Owner();
         owner2.setName("Owner 2");
+        ownerRepository.add(owner2);
+
+        carOwner = new CarOwner();
+        carOwner.setOwner(owner);
+        carOwner.setStartAt(LocalDateTime.now().minusYears(1).withNano(0));
+        carOwner.setEndAt(LocalDateTime.now().minusMonths(6).withNano(0));
+
+        carOwner2 = new CarOwner();
+        carOwner2.setOwner(owner2);
+        carOwner2.setStartAt(LocalDateTime.now().minusMonths(6).withNano(0));
+        carOwner2.setEndAt(LocalDateTime.now().withNano(0));
 
         owners = new ArrayList<>();
-        owners.add(owner);
-        owners.add(owner2);
+        /*owners = new HashSet<>();*/
+        owners.add(carOwner);
+        owners.add(carOwner2);
 
         body = new Body();
         body.setName("Body1");
@@ -66,10 +85,18 @@ class HqlCarRepositoryTest {
         car.setTransmission(transmission);
         car.setEngine(engine);
         car.setOwner(owner);
-        car.setOwners(owners);
+        car.setCarOwners(owners);
+        /*carOwner.setOwner(owner);*/
+        carOwner.setCar(car);
+        carOwner2.setCar(car);
+        /*carOwner2.setOwner(owner2);
+        carOwner2.setCar(car);
+        owner.setCarOwners(List.of(carOwner));
+        owner2.setCarOwners(List.of(carOwner2));*/
 
+        System.out.println("car before add = " + car);
         store.add(car);
-        System.out.println("car = " + car);
+        System.out.println("car after add = " + car);
         Optional<Car> carInDb = store.findById(car.getId());
 
         assertThat(carInDb.isPresent()).isTrue();
@@ -78,8 +105,8 @@ class HqlCarRepositoryTest {
         assertThat(carInDb.get().getCarModel().getName()).isEqualTo("CarModel1");
         assertThat(carInDb.get().getTransmission().getName()).isEqualTo("Transmission1");
         assertThat(carInDb.get().getOwner().getName()).isEqualTo("Owner 1");
-        assertThat(carInDb.get().getEngine()).isEqualTo(engine);
-        assertThat(carInDb.get().getOwners()).isNotEmpty().hasSize(2).contains(owner, owner2);
+        assertThat(carInDb.get().getEngine().getName()).isEqualTo("Engine 1");
+        assertThat(carInDb.get().getCarOwners()).isNotEmpty().hasSize(2).contains(carOwner, carOwner2);
     }
 
 
@@ -88,7 +115,8 @@ class HqlCarRepositoryTest {
         Car car1 = new Car();
         car1.setEngine(new Engine());
         car1.setOwner(owner);
-        car1.setOwners(List.of(new Owner()));
+        car1.setCarOwners(List.of(new CarOwner()));
+        /*car1.setCarOwners(Set.of(new CarOwner()));*/
 
         store.add(car1);
         System.out.println("car1 = " + car1);
@@ -96,7 +124,8 @@ class HqlCarRepositoryTest {
         Car car2 = new Car();
         car2.setEngine(new Engine());
         car2.setOwner(owner);
-        car2.setOwners(List.of(new Owner()));
+        car2.setCarOwners(List.of(new CarOwner()));
+        /*car2.setCarOwners(Set.of(new CarOwner()));*/
 
         System.out.println("car2 = " + car2);
         store.add(car2);
@@ -113,24 +142,57 @@ class HqlCarRepositoryTest {
         Car car1 = new Car();
         car1.setEngine(engine);
         car1.setOwner(owner);
-        car1.setOwners(List.of(owner));
+        CarOwner carOwner3 = new CarOwner(owner, car1);
+
+        car1.setCarOwners(List.of(carOwner3));
+        /*car1.setCarOwners(Set.of(carOwner3));
+        carOwner.setCar(car1);*/
+
         store.add(car1);
+
+        System.out.println("car1 at whenUpdate() = " + car1);
 
         Car car2 = new Car();
         car2.setOwner(owner2);
         store.add(car2);
 
         car1.setOwner(owner2);
-        car1.setOwners(List.of(owner, owner2));
+        CarOwner carOwner4 = new CarOwner(owner2, car1);
+        car1.setCarOwners(List.of(carOwner3, carOwner4));
+        /*car1.setCarOwners(Set.of(carOwner3, carOwner4));
+        carOwner2.setCar(car1);*/
 
         store.update(car1);
 
         Optional<Car> carInDb = store.findById(car1.getId());
 
+        System.out.println("car1 at whenUpdate() after update = " + car1);
+        System.out.println("car1 at whenUpdate() findById object = " + carInDb.get());
+        System.out.println("carOwner4 after update = " + carOwner4);
+
         assertThat(carInDb.isPresent()).isTrue();
         assertThat(carInDb.get().getId()).isNotEqualTo(0);
         assertThat(carInDb.get().getOwner().getName()).isEqualTo("Owner 2");
-        assertThat(carInDb.get().getOwners()).isNotEmpty().hasSize(2).contains(owner, owner2);
+        assertThat(carInDb.get().getCarOwners()).isNotEmpty().hasSize(2);
+        /*assertThat(carInDb.get().getCarOwners().get(0).getEndAt().toLocalDate()).isEqualTo(carOwner3.getEndAt().toLocalDate());*/
+        assertTrue(carInDb.get().getCarOwners().contains(carOwner3));
+        /*assertThat(carInDb.get().getCarOwners().get(1).getEndAt().toLocalDate()).isEqualTo(carOwner4.getEndAt().toLocalDate());
+        assertTrue(carInDb.get().getCarOwners().contains(carOwner4));*/
+        System.out.println("car1 at whenUpdate() before delete carOwner = " + car1);
+
+        car1.setCarOwners(new ArrayList<>(List.of(carOwner3)));
+        /*car1.setCarOwners(Set.of(carOwner3));*/
+        store.update(car1);
+        System.out.println("car1 at whenUpdate() after delete carOwner = " + car1);
+        carInDb = store.findById(car1.getId());
+        System.out.println("carInDb at whenUpdate() after delete carOwner = " + car1);
+
+        assertThat(carInDb.isPresent()).isTrue();
+        assertThat(carInDb.get().getCarOwners()).isNotEmpty().hasSize(1);
+        /*assertThat(carInDb.get().getCarOwners().get(0).getEndAt().toLocalDate()).isEqualTo(carOwner3.getEndAt().toLocalDate());*/
+        assertTrue(carInDb.get().getCarOwners().contains(carOwner3));
+        assertFalse(carInDb.get().getCarOwners().contains(carOwner4));
+
     }
 
     @Test
@@ -138,7 +200,8 @@ class HqlCarRepositoryTest {
         Car car1 = new Car();
         car1.setEngine(new Engine());
         car1.setOwner(new Owner());
-        car1.setOwners(List.of(new Owner()));
+        car1.setCarOwners(List.of(new CarOwner()));
+        /*car1.setCarOwners(Set.of(new CarOwner()));*/
 
         store.add(car1);
         Optional<Car> fromDb = store.findById(car1.getId());

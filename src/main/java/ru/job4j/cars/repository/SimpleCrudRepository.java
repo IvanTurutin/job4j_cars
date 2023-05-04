@@ -1,10 +1,12 @@
 package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
+import net.jcip.annotations.ThreadSafe;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@ThreadSafe
+@Repository
 @AllArgsConstructor
 public class SimpleCrudRepository implements CrudRepository {
     private final SessionFactory sf;
@@ -55,8 +59,12 @@ public class SimpleCrudRepository implements CrudRepository {
                 sq.setParameter(arg.getKey(), arg.getValue());
             }
             var rslt = sq.getSingleResult();
+            System.out.println("tyt rabotaet public <T> Optional<T> optional(String query, Class<T> cl, Map<String, Object> args)");
             System.out.println(rslt);
-            return Optional.ofNullable(rslt);
+            System.out.println(rslt.getClass().getName());
+            Optional<T> obj = Optional.of(rslt);
+            System.out.println(obj.get().getClass());
+            return Optional.of(rslt);
         };
         try {
             return tx(command);

@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS files
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
     path VARCHAR NOT NULL,
-    post_id INT NOT NULL REFERENCES auto_posts(id),
+    post_id INT REFERENCES auto_posts(id),
     UNIQUE(name, path)
 );
 

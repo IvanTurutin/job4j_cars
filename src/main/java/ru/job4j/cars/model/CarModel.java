@@ -19,6 +19,12 @@ import javax.persistence.*;
 public class CarModel implements SearchAttribute {
 
     /**
+     * Название типа аттрибута поиска для клаcса CarModel
+     */
+    public static final String CAR_MODEL = "carModel";
+
+
+    /**
      * Идентификатор марки автомобиля
      */
     @Id
@@ -33,10 +39,7 @@ public class CarModel implements SearchAttribute {
 
     @Override
     public String getType() {
-/*
-        return this.getClass().getSimpleName().toLowerCase();
-*/
-        return "carModel";
+        return CAR_MODEL;
     }
 
 }

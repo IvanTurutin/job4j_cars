@@ -34,7 +34,7 @@ public class HqlEngineRepository implements EngineRepository {
 
     @Override
     public Optional<Engine> add(Engine engine) {
-        return cr.run(session -> session.persist(engine)) ? Optional.of(engine) : Optional.empty();
+        return cr.run(session -> session.save(engine)) ? Optional.of(engine) : Optional.empty();
     }
 
     @Override
@@ -59,7 +59,6 @@ public class HqlEngineRepository implements EngineRepository {
                 ? Optional.of(engine)
                 : Optional.empty();
     }
-
 
     /**
      * Очищает таблицу от записей

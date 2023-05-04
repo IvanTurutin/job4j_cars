@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Engine {
+public class Engine implements SearchAttribute {
     /**
      * Идентификатор двигателя
      */
@@ -25,4 +25,13 @@ public class Engine {
     @EqualsAndHashCode.Include
     private int id;
 
+    /**
+     * Название двигателя/модель/модификация
+     */
+    private String name;
+
+    @Override
+    public String getType() {
+        return this.getClass().getSimpleName().toLowerCase();
+    }
 }

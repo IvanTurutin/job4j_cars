@@ -1,12 +1,16 @@
 package ru.job4j.cars.repository;
 
+import lombok.AllArgsConstructor;
 import net.jcip.annotations.ThreadSafe;
+import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 @ThreadSafe
+@Repository
+@AllArgsConstructor
 public class HqlPostRepository implements PostRepository {
 
     private final CrudRepository crudRepository;
@@ -16,10 +20,8 @@ public class HqlPostRepository implements PostRepository {
     public static final String FROM = "fFrom";
     public static final String CHARACTERISTIC = "fCharacteristic";
     public static final String USER_ID = "fUserId";
-
     public static final String QUANTITY = "fQuantity";
     public static final int QUANTITY_VALUE = 0;
-
     public static final String DELETE_STATEMENT = String.format(
             "DELETE %s WHERE id = :%s",
             MODEL, ID
@@ -37,9 +39,6 @@ public class HqlPostRepository implements PostRepository {
     public static final String FIND_BY_SUBSCRIBED_USER = FIND_ALL_STATEMENT
             + String.format(" join t.users u where u.id = :%s", USER_ID);
 
-    public HqlPostRepository(CrudRepository crudRepository) {
-        this.crudRepository = crudRepository;
-    }
 
     @Override
     public Optional<Post> add(Post post) {
@@ -63,6 +62,7 @@ public class HqlPostRepository implements PostRepository {
 
     @Override
     public List<Post> findAllOrderById() {
+        System.out.println(FIND_ALL_ORDER_BY_ID_STATEMENT);
         return crudRepository.query(FIND_ALL_ORDER_BY_ID_STATEMENT, Post.class);
     }
 
@@ -101,6 +101,11 @@ public class HqlPostRepository implements PostRepository {
         return execute(formStatement(new ArrayList<>(attributes)));
     }
 
+    /**
+     * Запускает поиск объявлений по критериям поиска.
+     * @param helper объект Helper, содержащий недостающую часть запроса к БД и карту с параметрами запроса.
+     * @return список объявлений
+     */
     private List<Post> execute(Helper helper) {
         return crudRepository.query(
                 FIND_ALL_STATEMENT + helper.statement, Post.class,
@@ -108,6 +113,13 @@ public class HqlPostRepository implements PostRepository {
         );
     }
 
+    /**
+     * Формирует вторую часть запроса для отбора объявлений по критериям поиска.
+     * @param attributes список атрибутов поиска. Для фотографий действует отдельное правило формирования запроса
+     *                   (объявление должно содержать хотя бы одну фотографию). Для остальных атрибутов осуществляется
+     *                   поиск по id
+     * @return возвращает Helper
+     */
     private Helper formStatement(List<SearchAttribute> attributes) {
         Helper helper = new Helper(new StringBuilder(), new HashMap<>());
         helper.statement.append(" where");
@@ -138,6 +150,9 @@ public class HqlPostRepository implements PostRepository {
         );
     }
 
+    /**
+     * Вспомогательный класс для возможности передачи из метода набора необходимых объектов.
+     */
     private class Helper {
         StringBuilder statement;
         Map<String, Object> findAttr;

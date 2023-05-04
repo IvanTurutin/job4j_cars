@@ -6,9 +6,7 @@ import ru.job4j.cars.config.HibernateConfiguration;
 import ru.job4j.cars.model.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,16 +30,28 @@ class HqlPriceHistoryRepositoryTest {
 
         Car car = new Car();
         Engine engine = new Engine();
+        engine.setName("Engine1");
         car.setEngine(engine);
         Owner owner = new Owner();
         owner.setName("Owner1");
-        car.setOwner(owner);
+        /*car.setOwner(owner);*/
         Owner owner2 = new Owner();
         owner2.setName("Owner2");
-        List<Owner> owners = new ArrayList<>();
-        owners.add(owner);
-        owners.add(owner2);
-        car.setOwners(owners);
+
+        HqlOwnerRepository ownerRepository = new HqlOwnerRepository(cr);
+        ownerRepository.truncateTable();
+        ownerRepository.add(owner);
+        ownerRepository.add(owner2);
+
+        List<CarOwner> owners = new ArrayList<>();
+        /*Set<CarOwner> owners = new HashSet<>();*/
+        CarOwner carOwner = new CarOwner();
+        carOwner.setOwner(owner);
+        CarOwner carOwner2 = new CarOwner();
+        carOwner2.setOwner(owner2);
+        owners.add(carOwner);
+        owners.add(carOwner2);
+        car.setCarOwners(owners);
         post.setCar(car);
 
         priceHistory = new PriceHistory();
@@ -68,6 +78,8 @@ class HqlPriceHistoryRepositoryTest {
         file2.setName("File2");
         ArrayList<File> files = new ArrayList<>(List.of(file, file2));
         post.setFiles(files);
+
+        System.out.println("Post at initStore = " + post);
 
         HqlPostRepository postRepository = new HqlPostRepository(cr);
         postRepository.add(post);

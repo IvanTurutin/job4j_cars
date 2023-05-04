@@ -2,6 +2,7 @@ package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
 import net.jcip.annotations.ThreadSafe;
+import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.User;
 
 import java.util.*;
@@ -11,6 +12,7 @@ import java.util.*;
  * @see ru.job4j.cars.model.User
  */
 @ThreadSafe
+@Repository
 @AllArgsConstructor
 public class HqlUserRepository implements UserRepository {
 
@@ -42,7 +44,7 @@ public class HqlUserRepository implements UserRepository {
      */
     @Override
     public Optional<User> create(User user) {
-        return crudRepository.run(session -> session.persist(user)) ? Optional.of(user) : Optional.empty();
+        return crudRepository.run(session -> session.save(user)) ? Optional.of(user) : Optional.empty();
     }
 
     /**
@@ -102,10 +104,9 @@ public class HqlUserRepository implements UserRepository {
 
     /**
      * Найти пользователя по login и паролю.
-     *
      * @param login    login.
      * @param password пароль
-     * @return Optional or user.
+     * @return Optional of user.
      */
     @Override
     public Optional<User> findByLoginAndPassword(String login, String password) {
@@ -118,9 +119,17 @@ public class HqlUserRepository implements UserRepository {
         );
     }
 
+    /**
+     * Очищает таблицу от записей
+     */
     public void truncate() {
         crudRepository.run(
                 TRUNCATE_TABLE,
                 new HashMap<>());
+    }
+
+    @Override
+    public List<User> findAll() {
+        return crudRepository.query(FIND_ALL_ORDER_BY_ID_STATEMENT, User.class);
     }
 }

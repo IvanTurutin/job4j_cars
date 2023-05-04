@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS cars
 (
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
-    engine_id INT NOT NULL UNIQUE REFERENCES engines(id),
+    engine_id INT NOT NULL REFERENCES engines(id),
     owner_id INT NOT NULL REFERENCES owners(id)
 );
 

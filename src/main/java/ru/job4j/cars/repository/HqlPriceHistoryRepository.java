@@ -2,6 +2,7 @@ package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
 import net.jcip.annotations.ThreadSafe;
+import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.Post;
 import ru.job4j.cars.model.PriceHistory;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @ThreadSafe
+@Repository
 @AllArgsConstructor
 public class HqlPriceHistoryRepository implements PriceHistoryRepository {
     private final CrudRepository crudRepository;
@@ -30,7 +32,7 @@ public class HqlPriceHistoryRepository implements PriceHistoryRepository {
 
     @Override
     public Optional<PriceHistory> create(PriceHistory priceHistory) {
-        return crudRepository.run(session -> session.persist(priceHistory))
+        return crudRepository.run(session -> session.save(priceHistory))
                 ? Optional.of(priceHistory)
                 : Optional.empty();
     }
@@ -59,6 +61,9 @@ public class HqlPriceHistoryRepository implements PriceHistoryRepository {
         );
     }
 
+    /**
+     * Очищает таблицу от записей
+     */
     public void truncate() {
         crudRepository.run(
                 TRUNCATE_TABLE,

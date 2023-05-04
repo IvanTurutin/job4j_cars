@@ -34,7 +34,7 @@ public class HqlBodyRepository implements BodyRepository {
 
     @Override
     public Optional<Body> add(Body body) {
-        return cr.run(session -> session.persist(body)) ? Optional.of(body) : Optional.empty();
+        return cr.run(session -> session.save(body)) ? Optional.of(body) : Optional.empty();
     }
 
     @Override

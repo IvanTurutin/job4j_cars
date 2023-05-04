@@ -22,19 +22,12 @@ public class HqlCarRepository implements CarRepository {
 
     public static final String MODEL = "Car";
     public static final String ID = "fID";
-    public static final String ENGINE = "engine";
-    public static final String OWNER = "owner";
-    public static final String OWNERS = "owners";
 
-
-    public static final String DELETE_STATEMENT = String.format(
+        public static final String DELETE_STATEMENT = String.format(
             "DELETE %s WHERE id = :%s",
             MODEL, ID
     );
-    public static final String FIND_ALL_STATEMENT = String.format(
-            "select distinct t from %s t JOIN FETCH t.%s JOIN FETCH t.%s JOIN FETCH t.%s",
-            MODEL, ENGINE, OWNER, OWNERS
-    );
+    public static final String FIND_ALL_STATEMENT = String.format("select t from %s as t", MODEL);
     public static final String FIND_ALL_ORDER_BY_ID_STATEMENT = FIND_ALL_STATEMENT + " order by t.id";
     public static final String FIND_BY_ID_STATEMENT = FIND_ALL_STATEMENT + String.format(" where t.id = :%s", ID);
     public static final String TRUNCATE_TABLE = String.format("DELETE FROM %s", MODEL);
@@ -71,7 +64,6 @@ public class HqlCarRepository implements CarRepository {
                 ? Optional.of(car)
                 : Optional.empty();
     }
-
 
     /**
      * Очищает таблицу от записей

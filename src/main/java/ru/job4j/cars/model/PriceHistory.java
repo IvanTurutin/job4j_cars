@@ -1,9 +1,6 @@
 package ru.job4j.cars.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class PriceHistory {
     /**
@@ -39,5 +37,10 @@ public class PriceHistory {
      * Дата изменения цены
      */
     private LocalDateTime created = LocalDateTime.now();
+
+    public PriceHistory(int before, int after) {
+        this.before = before;
+        this.after = after;
+    }
 
 }

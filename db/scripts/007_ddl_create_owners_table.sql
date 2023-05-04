@@ -7,3 +7,4 @@ CREATE TABLE IF NOT EXISTS owners
 comment on table owners is 'Владельцы автомобилей';
 comment on column owners.id is 'Идентификатор владельца';
 comment on column owners.name is 'ФИО владельца';
+

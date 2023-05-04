@@ -41,12 +41,8 @@ public class Post {
     private LocalDateTime created = LocalDateTime.now();
     /**
      * Пользователь, создавший объявление
-     * PERSIST,
-     *     MERGE,
-     *     REMOVE,
-     *     REFRESH,
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "auto_user_id")
     private User user;
 
@@ -86,5 +82,26 @@ public class Post {
     @Fetch(FetchMode.SUBSELECT)
     @JoinColumn(name = "post_id")
     private List<File> files = new ArrayList<>();
+
+    private boolean publish;
+
+    /**
+     * Метод осуществляет добавление цены в историю цен
+     * @param price последняя цена
+     */
+    public void addPrice(int price) {
+        if (priceHistory.isEmpty()) {
+            priceHistory.add(new PriceHistory(price, price));
+            return;
+        }
+
+        int lastPrice = priceHistory.get(priceHistory.size() - 1).getAfter();
+        if (lastPrice == price) {
+            return;
+        }
+
+        priceHistory.add(new PriceHistory(lastPrice, price));
+    }
+
 
 }
