@@ -8,10 +8,16 @@
         <property name="hibernate.connection.url">jdbc:postgresql://127.0.0.1:5432/cars</property>
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">123456789</property>
-        <property name="hibernate.connection.pool_size">1</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.connection.pool_size">3</property>
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+<!--
+        <property name="hibernate.format_sql">true</property>
+-->
+
+        <!--<property name="hibernate.hbm2ddl.auto">create</property> УБРАТЬ НА РАБОЧЕЙ ПРОГРАММЕ-->
+
         <property name="hibernate.jdbc.time_zone">UTC</property>
 
         <mapping class="ru.job4j.cars.model.User"/>
@@ -24,5 +30,7 @@
         <mapping class="ru.job4j.cars.model.Body"/>
         <mapping class="ru.job4j.cars.model.CarModel"/>
         <mapping class="ru.job4j.cars.model.Transmission"/>
+        <mapping class="ru.job4j.cars.model.TimeZone"/>
+        <mapping class="ru.job4j.cars.model.CarOwner"/>
     </session-factory>
 </hibernate-configuration>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+    <title>АвтоМаг</title>
+</head>
+<body>
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" th:href="@{/index}">АвтоМаг</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" th:href="@{/index}">Все<span class="sr-only">(current)</span></a>
+                <li class="nav-item dropdown" th:if="${user.name == 'Гость'}" >
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span th:text="${user.name}"></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" th:href="@{/users/loginPage}">
+                            <span>Войти</span>
+                        </a>
+                        <a class="dropdown-item" th:href="@{/users/formAdd}">
+                            <span>Зарегистрироваться</span>
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" th:if="${user.name != 'Гость'}" >
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span th:text="${user.name}"></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" th:href="@{/users/formEdit}">
+                            <span>Редактировать профиль</span>
+                        </a>
+                        <a class="dropdown-item" th:href="@{/users/logout}">
+                            <span>Выйти</span>
+                        </a>
+
+                    </div>
+                </li>
+            </div>
+        </div>
+    </nav>
+    <div class="row pt-3">
+        <div class="card" style="width: 100%">
+            <div class="card-header">
+                Редактирование объявления.
+            </div>
+            <div class="card-body">
+                <form th:action="@{/posts/addPost}" method="POST" th:object="${post}" enctype="multipart/form-data">
+                    <input type="hidden" name="id" th:field="*{id}"/>
+                    <input type="hidden" name="userId" th:value="${user.id}"/>
+                    <input type="hidden" name="userName" th:value="${user.name}"/>
+                    <input type="hidden" name="created" th:field="*{created}"/>
+                    <input type="hidden" name="car.id" th:field="*{car.id}"/>
+<!--
+                    <input type="hidden" name="priceHistory" th:field="*{priceHistory}"/>
+-->
+
+
+                    <div class="form-group">
+                        <label for="text">Описание</label>
+                        <input type="text" class="form-control" id="text" name="text" placeholder="Введите описание" th:field="*{text}"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="car.carModel.id">Модель автомобиля</label>
+                        <select class="form-control" id="car.carModel.id" name="car.carModel.id">
+                            <option th:each="model, itemStat : ${models}" th:value="${model.id}" th:text="${model.name}"
+                                    th:selected="${model.id == __*{car.carModel.id}__}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="car.body.id">Кузов автомобиля</label>
+                        <select class="form-control" id="car.body.id" name="car.body.id">
+                            <option th:each="body, itemStat : ${bodies}" th:value="${body.id}" th:text="${body.name}"
+                                    th:selected="${body.id == __*{car.body.id}__}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="car.transmission.id">Тип коробки передач</label>
+                        <select class="form-control" id="car.transmission.id" name="car.transmission.id">
+                            <option th:each="transmission, itemStat : ${transmissions}" th:value="${transmission.id}"
+                                    th:text="${transmission.name}" th:selected="${transmission.id == __*{car.transmission.id}__}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="car.engine.id">Двигатель</label>
+                        <select class="form-control" id="car.engine.id" name="car.engine.id">
+                            <option th:each="engine, itemStat : ${engines}" th:value="${engine.id}"
+                                    th:text="${engine.name}" th:selected="${engine.id == __*{car.engine.id}__}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Цена</label>
+                        <input type="number" class="form-control" id="price" name="price"
+                               min="1" step="1" placeholder="Введите цену"
+                               th:value="${post.price}"/>
+                    </div>
+
+                    <div class="col-md-12 p-0">
+                        <label for="print_files"><b>Добавленные фотографии</b></label>
+                        <div class="row" th:each="file, fileStat : *{files}" id="print_files" name="print_files">
+                            <img th:width="150" th:high="150" th:src="@{|/files/fromSession/${fileStat.index}|}"/>
+                            <a th:href="@{|/posts/deletePhoto/${fileStat.index}|}">
+                                <span>Удалить фото</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="mPFiles"><b>Фото</b></label>
+                        <input id="mPFiles" name="mPFiles" type="file" class="file"  data-show-upload="true" data-show-caption="true" multiple>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-5">
+                            <label for="car.owner.id">Выберите владельца</label>
+                            <select class="form-control" id="car.owner.id"
+                                    name="car.owner.id">
+                                <option th:each="owner, ownerStat : ${owners}" th:value="${owner.id}"
+                                        th:text="${owner.name}" th:selected="${owner.id == __*{car.owner.id}__}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="action" value="newOwner">Добавить владельца</button>
+
+                    <div class="col-md-12 form_field_outer p-0">
+                        <label for="form_field_outer_row">Введите историю владения автомобилем</label>
+                        <div class="row form_field_outer_row" th:each="carOwner, carOwnerStat : *{car.carOwners}" id="form_field_outer_row">
+                            <input class="car.carOwners[].id" type="hidden" th:name="car.carOwners[__${carOwnerStat.index}__].id" th:value="${carOwner.id}"/>
+                            <input class="car.carOwners[].car.id" type="hidden" th:name="car.carOwners[__${carOwnerStat.index}__].car.id" th:value="*{car.id}"/>
+                            <div class="col-2">
+                                <input class="form-control car.carOwners[].startAt" type="date" th:name="car.carOwners[__${carOwnerStat.index}__].startAt"
+                                       th:value="${#temporals.format(carOwner.startAt, 'yyyy-MM-dd')}"
+                                       aria-label="Дата начала вступления в собственность владельца"
+                                       th:aria-describedby="button-addon__${carOwnerStat.index}__">
+                            </div>
+                            <div class="col-2">
+                                <input class="form-control car.carOwners[].endAt" type="date" th:name="car.carOwners[__${carOwnerStat.index}__].endAt"
+                                       th:value="${#temporals.format(carOwner.endAt, 'yyyy-MM-dd')}"
+                                       aria-label="Дата окончания права собственности владельца"
+                                       th:aria-describedby="button-addon__${carOwnerStat.index}__">
+                            </div>
+                            <div class="col-5">
+                                <select class="form-control car.carOwners[].owner.id"
+                                        th:id="car.carOwners[__${carOwnerStat.index}__].owner.id"
+                                        th:name="car.carOwners[__${carOwnerStat.index}__].owner.id">
+                                    <option th:each="owner, ownerStat : ${owners}" th:value="${owner.id}"
+                                            th:text="${owner.name}" th:selected="${owner.id == carOwner.owner.id}"></option>
+                                </select>
+                            </div>
+                            <div class="col-3">
+                                <div class="input-group-append" th:id="button-addon__${carOwnerStat.index}__">
+                                    <button class="btn btn-outline-secondary del_owner" type="button">Удалить</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <button class="btn btn-primary add_new_owner_btn" type="button">Добавить в историю владения</button>
+
+                    <div class="form-check" th:if="${post.publish}">
+                        <input type="checkbox" name="publish" class="form-check-input" id="publish" checked>
+                        <label class="form-check-label" for="publish">Опубликовать</label>
+                    </div>
+
+                    <div class="form-check" th:if="${!post.publish}">
+                        <input type="checkbox" name="publish" class="form-check-input" id="publish"d>
+                        <label class="form-check-label" for="publish">Опубликовать</label>
+                    </div>
+
+                    <br>
+                    <br>
+
+                    <button type="submit" class="btn btn-primary" name="action" value="save">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="owner-select" hidden>
+        <div class="col-5">
+            <select class="form-control car.carOwners[].owner.id"
+                    id="car.carOwners[index].owner.id"
+                    name="car.carOwners[index].owner.id">
+                <option th:each="owner, itemStat : ${owners}" th:value="${owner.id}"
+                        th:text="${owner.name}" th:selected="${owner.id == 0}"></option>
+            </select>
+        </div>
+    </div>
+    
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("body").on("click",".add_new_owner_btn", function (){
+            console.log("clicked");
+            var index = $(".form_field_outer").find(".form_field_outer_row").length;
+
+            var now = new Date();
+            var day = ("0" + now.getDate()).slice(-2);
+            var month = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear()+"-"+(month)+"-"+(day);
+
+            var ownerSelect = $(".owner-select").clone();
+            ownerSelect.find(".form-control").attr(`id`, `car.carOwners[${index}].owner.id`).attr(`name`, `car.carOwners[${index}].owner.id`);
+            var block = ownerSelect.html();
+
+            $(".form_field_outer").append([`
+                <div class="row form_field_outer_row">
+                            <div class="col-2">
+                                <input class="form-control" type="date" name="car.carOwners[${index}].startAt"
+                                       value="${today}"
+                                       placeholder="Введите дату начала права собственности"
+                                       aria-label="Дата начала вступления в собственность владельца"
+                                       aria-describedby="button-addon${index}">
+                            </div>
+                            <div class="col-2">
+                                <input class="form-control" type="date" name="car.carOwners[${index}].endAt"
+                                       value="${today}"
+                                       placeholder="Введите дату окончания права собственности"
+                                       aria-label="Дата окончания права собственности владельца"
+                                       aria-describedby="button-addon${index}">
+                            </div>
+                            ${block}
+                            <div class="col-3">
+                                <div class="input-group-append" id="button-addon${index}">
+                                    <button class="btn btn-outline-secondary del_owner" type="button" disabled>Удалить</button>
+                                </div>
+                            </div>
+                </div>
+            `]);
+
+            $(".form_field_outer").find(".del_owner:not(:first)").prop("disabled", false);
+            $(".form_field_outer").find(".del_owner").first().prop("disabled", true);
+        });
+
+    });
+
+    $(document).ready(function () {
+        $("body").on("click", ".del_owner", function () {
+            $(this).closest(".form_field_outer_row").remove();
+            $("input[class^='car.carOwners[].id']").each(function(i, el){
+                this.name = "car.carOwners[" + i + "].id";
+            });
+            $("input[class^='car.carOwners[].car.id']").each(function(i, el){
+                this.name = "car.carOwners[" + i + "].car.id";
+            });
+            $("select[class^='form-control car.carOwners[].owner.id']").each(function(i, el){
+                this.name = "car.carOwners[" + i + "].owner.id";
+                this.id = "car.carOwners[" + i + "].owner.id";
+            });
+            $("input[class^='form-control car.carOwners[].startAt']").each(function(i, el){
+                this.name = "car.carOwners[" + i + "].startAt";
+            });
+            $("input[class^='form-control car.carOwners[].endAt']").each(function(i, el){
+                this.name = "car.carOwners[" + i + "].endAt";
+            });
+
+            console.log("success");
+        });
+    });
+</script>
+
+</body>
+</html>
