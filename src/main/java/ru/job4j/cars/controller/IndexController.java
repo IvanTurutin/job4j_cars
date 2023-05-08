@@ -6,10 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.job4j.cars.model.User;
+import ru.job4j.cars.search_attributes.PostIsPublish;
 import ru.job4j.cars.service.PostService;
 import ru.job4j.cars.util.ControllerUtility;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * Контроллер стартовой страницы
@@ -29,7 +31,9 @@ public class IndexController {
     @GetMapping("/index")
     public String index(Model model, HttpSession session) {
         model.addAttribute("user", ControllerUtility.checkUser(session));
-        model.addAttribute("posts", postService.findAll((User) session.getAttribute("user")));
+        model.addAttribute("posts", postService.findBySearchAttributes(List.of(new PostIsPublish(true)),
+                (User) session.getAttribute("user")));
+        model.addAttribute("showMode", "all");
         return "index";
     }
 

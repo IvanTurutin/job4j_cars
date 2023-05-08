@@ -54,7 +54,7 @@ public class HqlCarModelRepository implements CarModelRepository {
     public Optional<CarModel> delete(CarModel carModel) {
         return cr.query(
                 DELETE_STATEMENT,
-                Map.of(ID, carModel.getId())
+                Map.of(ID, carModel.getCharactValue())
         )
                 ? Optional.of(carModel)
                 : Optional.empty();

@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import ru.job4j.cars.config.HibernateConfiguration;
 import ru.job4j.cars.model.*;
 import ru.job4j.cars.model.TimeZone;
+import ru.job4j.cars.search_attributes.PostIsPublish;
+import ru.job4j.cars.search_attributes.SearchAttribute;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -124,6 +126,9 @@ class HqlPostRepositoryTest {
         ArrayList<File> files = new ArrayList<>(List.of(file, file2));
         post.setFiles(files);
 
+        post.setPublish(true);
+        System.out.println("Post at beforeEach() = " + post);
+
     }
 
     @AfterEach
@@ -150,7 +155,7 @@ class HqlPostRepositoryTest {
         assertThat(postFromDb.get().getText()).isEqualTo("Post1");
         assertThat(postFromDb.get().getUser().getLogin()).isEqualTo("User1");
         assertThat(postFromDb.get().getCar().getBody().getName()).isEqualTo("Body1");
-        assertThat(postFromDb.get().getCar().getEngine().getId()).isEqualTo(engine.getId());
+        assertThat(postFromDb.get().getCar().getEngine().getCharactValue()).isEqualTo(engine.getCharactValue());
         assertThat(postFromDb.get().getCar().getCarModel().getName()).isEqualTo("CarModel1");
         assertThat(postFromDb.get().getCar().getTransmission().getName()).isEqualTo("Transmission1");
         assertThat(postFromDb.get().getCar().getOwner().getName()).isEqualTo("Owner1");
@@ -318,6 +323,19 @@ class HqlPostRepositoryTest {
         posts = store.findBySearchAttributes(cc);
         assertThat(posts).isEmpty();
     }
+
+    @Test
+    void whenFindByPublish() {
+        store.add(post);
+        PostIsPublish publish = new PostIsPublish(true);
+        List<Post> posts = store.findBySearchAttributes(List.of(publish));
+        posts.forEach(System.out::println);
+        assertThat(posts).isNotEmpty().hasSize(1).contains(post);
+        assertThat(posts.get(0).isPublish()).isEqualTo(true);
+        posts = store.findBySearchAttributes(List.of(new PostIsPublish(false)));
+        assertThat(posts).isEmpty();
+    }
+
 
     @Test
     void whenFindBySubscribedUser() {

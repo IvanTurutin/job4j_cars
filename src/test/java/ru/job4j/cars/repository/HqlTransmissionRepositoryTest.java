@@ -35,7 +35,7 @@ class HqlTransmissionRepositoryTest {
         Optional<Transmission> engineOptional = store.findById(transmission.getId());
 
         assertThat(engineOptional.isPresent()).isTrue();
-        assertThat(engineOptional.get().getId()).isNotEqualTo(0);
+        assertThat(engineOptional.get().getCharactValue()).isNotEqualTo(0);
     }
 
     @Test

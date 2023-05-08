@@ -1,6 +1,8 @@
 package ru.job4j.cars.model;
 
 import lombok.*;
+import ru.job4j.cars.repository.HqlPostRepository;
+import ru.job4j.cars.search_attributes.SearchAttribute;
 
 import javax.persistence.*;
 
@@ -15,11 +17,6 @@ import javax.persistence.*;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 public class File implements SearchAttribute {
-
-    /**
-     * Название типа аттрибута поиска для клаcса File
-     */
-    public static final String FILES = "files";
 
     public File(String name, String path) {
         this.name = name;
@@ -43,13 +40,23 @@ public class File implements SearchAttribute {
      * Путь к файлу
      */
     private String path;
-/*
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "post_id")
-    private Post post;
-*/
+
+    private final  static String FIELD_NAME = "files";
+    private final static String CHARACTERISTIC = "fQuantity";
+    private final static int QUANTITY = 0;
+
     @Override
-    public String getType() {
-        return FILES;
+    public String getSearchAttribute() {
+        return String.format(" %s.%s.size > :%s", HqlPostRepository.TABLE_ALIAS, FIELD_NAME, CHARACTERISTIC);
+    }
+
+    @Override
+    public Object getCharactValue() {
+        return QUANTITY;
+    }
+
+    @Override
+    public String getCharacteristic() {
+        return CHARACTERISTIC;
     }
 }

@@ -2,6 +2,8 @@ package ru.job4j.cars.service;
 
 import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.model.*;
+import ru.job4j.cars.search_attributes.SearchAttribute;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -88,5 +90,14 @@ public interface PostService {
      * @param attributes список атрибутов поиска
      * @return список объявлений
      */
-    List<Post> findBySearchAttributes(List<SearchAttribute> attributes);
+    List<PostDto> findBySearchAttributes(List<SearchAttribute> attributes);
+
+    /**
+     * Обрабатывает запрос на поиск объявлений удовлетворяющих атрибутам поиска, при этом устанавливается часовой пояс
+     * по настройкам пользователя
+     * @param attributes список атрибутов поиска
+     * @param user пользователь, по которому устанавливается часовой пояс
+     * @return список объявлений
+     */
+    List<PostDto> findBySearchAttributes(List<SearchAttribute> attributes, User user);
 }

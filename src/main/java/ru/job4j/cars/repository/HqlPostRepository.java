@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.*;
+import ru.job4j.cars.search_attributes.SearchAttribute;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -15,6 +16,7 @@ public class HqlPostRepository implements PostRepository {
 
     private final CrudRepository crudRepository;
 
+    public static final String TABLE_ALIAS = "t";
     public static final String MODEL = "Post";
     public static final String ID = "fId";
     public static final String FROM = "fFrom";
@@ -27,17 +29,19 @@ public class HqlPostRepository implements PostRepository {
             MODEL, ID
     );
     public static final String FIND_ALL_STATEMENT = String.format(
-            "select t from %s as t",
-            MODEL
+            "select %s from %s as %s", TABLE_ALIAS, MODEL, TABLE_ALIAS
     );
-    public static final String FIND_ALL_ORDER_BY_ID_STATEMENT = FIND_ALL_STATEMENT + " order by t.id";
-    public static final String FIND_BY_ID_STATEMENT = FIND_ALL_STATEMENT + String.format(" where t.id = :%s", ID);
-    public static final String FIND_LAST_DAYS = FIND_ALL_STATEMENT + String.format(" where t.created > :%s", FROM);
+    public static final String FIND_ALL_ORDER_BY_ID_STATEMENT = FIND_ALL_STATEMENT
+            + String.format(" order by %s.id", TABLE_ALIAS);
+    public static final String FIND_BY_ID_STATEMENT = FIND_ALL_STATEMENT
+            + String.format(" where %s.id = :%s", TABLE_ALIAS, ID);
+    public static final String FIND_LAST_DAYS = FIND_ALL_STATEMENT
+            + String.format(" where %s.created > :%s", TABLE_ALIAS, FROM);
     public static final String FIND_BY_USER_STATEMENT = FIND_ALL_STATEMENT
-            + String.format(" where t.user.id = :%s", ID);
+            + String.format(" where %s.user.id = :%s", TABLE_ALIAS, ID);
     public static final String TRUNCATE_TABLE = String.format("DELETE FROM %s", MODEL);
     public static final String FIND_BY_SUBSCRIBED_USER = FIND_ALL_STATEMENT
-            + String.format(" join t.users u where u.id = :%s", USER_ID);
+            + String.format(" join %s.users u where u.id = :%s", TABLE_ALIAS, USER_ID);
 
 
     @Override
@@ -123,21 +127,32 @@ public class HqlPostRepository implements PostRepository {
     private Helper formStatement(List<SearchAttribute> attributes) {
         Helper helper = new Helper(new StringBuilder(), new HashMap<>());
         helper.statement.append(" where");
-        for (int i = 0; i < attributes.size(); i++) {
-            if (i > 0 && !attributes.get(i).getType().equals(File.FILES)) {
-                helper.statement.append(String.format(" and t.car.%s.id = :%s", attributes.get(i).getType(), CHARACTERISTIC));
+        /*for (int i = 0; i < attributes.size(); i++) {
+            if (i > 0 && !attributes.get(i).getSearchAttribute().equals(File.FILES)) {
+                helper.statement.append(String.format(" and t.car.%s.id = :%s", attributes.get(i).getSearchAttribute(), CHARACTERISTIC));
                 helper.findAttr.put(CHARACTERISTIC, attributes.get(i).getId());
-            } else if (i == 0 && attributes.get(i).getType().equals(File.FILES)) {
-                helper.statement.append(String.format(" t.%s.size > :%s", attributes.get(i).getType(), QUANTITY));
+            } else if (i == 0 && attributes.get(i).getSearchAttribute().equals(File.FILES)) {
+                helper.statement.append(String.format(" t.%s.size > :%s", attributes.get(i).getSearchAttribute(), QUANTITY));
                 helper.findAttr.put(QUANTITY, QUANTITY_VALUE);
-            } else if (i > 0 && attributes.get(i).getType().equals(File.FILES)) {
-                helper.statement.append(String.format(" and t.%s.size > :%s", attributes.get(i).getType(), QUANTITY));
+            } else if (i > 0 && attributes.get(i).getSearchAttribute().equals(File.FILES)) {
+                helper.statement.append(String.format(" and t.%s.size > :%s", attributes.get(i).getSearchAttribute(), QUANTITY));
                 helper.findAttr.put(QUANTITY, QUANTITY_VALUE);
             } else {
-                helper.statement.append(String.format(" t.car.%s.id = :%s", attributes.get(i).getType(), CHARACTERISTIC));
+                helper.statement.append(String.format(" t.car.%s.id = :%s", attributes.get(i).getSearchAttribute(), CHARACTERISTIC));
                 helper.findAttr.put(CHARACTERISTIC, attributes.get(i).getId());
             }
+        }*/
+        for (int i = 0; i < attributes.size(); i++) {
+            if (i == 0) {
+                helper.statement.append(attributes.get(i).getSearchAttribute());
+                helper.findAttr.put(attributes.get(i).getCharacteristic(), attributes.get(i).getCharactValue());
+            } else {
+                helper.statement.append(" and");
+                helper.statement.append(attributes.get(i).getSearchAttribute());
+                helper.findAttr.put(attributes.get(i).getCharacteristic(), attributes.get(i).getCharactValue());
+            }
         }
+        System.out.println("helper at formStatement() = " + helper);
         return helper;
     }
 
@@ -160,6 +175,14 @@ public class HqlPostRepository implements PostRepository {
             this.statement = statement;
             this.findAttr = query;
         }
+
+        @Override
+        public String toString() {
+            return "Helper{" +
+                    "statement=" + statement +
+                    ", findAttr=" + findAttr +
+                    '}';
+        }
     }
 
     /**
@@ -171,4 +194,10 @@ public class HqlPostRepository implements PostRepository {
                 new HashMap<>());
     }
 
+    public List<Post> findPuplish(boolean isPublish) {
+
+        String statement = "select t from Post as t where t.publish = " + isPublish;
+        System.out.println(statement);
+        return crudRepository.query(statement, Post.class);
+    }
 }

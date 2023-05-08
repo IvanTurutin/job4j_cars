@@ -54,7 +54,7 @@ public class HqlBodyRepository implements BodyRepository {
     public Optional<Body> delete(Body body) {
         return cr.query(
                 DELETE_STATEMENT,
-                Map.of(ID, body.getId())
+                Map.of(ID, body.getCharactValue())
         )
                 ? Optional.of(body)
                 : Optional.empty();

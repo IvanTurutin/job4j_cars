@@ -27,12 +27,10 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
+            <div class="navbar-nav" th:if="${showMode == 'all'}">
                 <a class="nav-item nav-link active" th:href="@{/index}">Все<span class="sr-only">(current)</span></a>
-                <!--<a class="nav-item nav-link" th:href="@{|/tasks/done/true|}">Выполненные</a>
-                <a class="nav-item nav-link" th:href="@{|/tasks/done/false|}">Новые</a> -->
-                <a class="nav-item nav-link" th:href="@{/tasks/myPosts}">Мои объявления</a>
-                <a class="nav-item nav-link" th:href="@{/tasks/findByAttributes}">Поиск по параметрам</a>
+                <a class="nav-item nav-link" th:href="@{/posts/myPosts}">Мои объявления</a>
+                <a class="nav-item nav-link" th:href="@{/posts/findByAttributes}">Поиск по параметрам</a>
                 <li class="nav-item dropdown" th:if="${user.name == 'Гость'}" >
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span th:text="${user.name}"></span>
@@ -57,10 +55,39 @@
                         <a class="dropdown-item" th:href="@{/users/logout}">
                             <span>Выйти</span>
                         </a>
-
                     </div>
                 </li>
-
+            </div>
+            <div class="navbar-nav" th:if="${showMode == 'myPosts'}">
+                <a class="nav-item nav-link" th:href="@{/index}">Все</a>
+                <a class="nav-item nav-link active" th:href="@{/posts/myPosts}">Мои объявления<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" th:href="@{/posts/findByAttributes}">Поиск по параметрам</a>
+                <li class="nav-item dropdown" th:if="${user.name == 'Гость'}" >
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span th:text="${user.name}"></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" th:href="@{/users/loginPage}">
+                            <span>Войти</span>
+                        </a>
+                        <a class="dropdown-item" th:href="@{/users/formAdd}">
+                            <span>Зарегистрироваться</span>
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" th:if="${user.name != 'Гость'}" >
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span th:text="${user.name}"></span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" th:href="@{/users/formEdit}">
+                            <span>Редактировать профиль</span>
+                        </a>
+                        <a class="dropdown-item" th:href="@{/users/logout}">
+                            <span>Выйти</span>
+                        </a>
+                    </div>
+                </li>
             </div>
         </div>
     </nav>
@@ -74,71 +101,51 @@
                 <th scope="col">Время создания</th>
                 <th scope="col">Фото</th>
                 <th scope="col">Статус</th>
+                <th scope="col">Редактировать</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="post: ${posts}">
                 <td th:text="${post.id}" />
+
                 <td>
                     <a th:href="@{|/posts/formShow/${post.id}|}">
                         <span th:text="${post.car.carModel.name}"></span>
                     </a>
                 </td>
 
-
-                <!-- может не быть элементов массива, тогда вылетит ошибка-->
-<!--
-                <td th:text="${post.priceHistory[0].after}" />
--->
                 <td>
-<!--
-                    <span th:if="${#lists.size(post.priceHistory) > 0}">
-                        <a th:text="${post.priceHistory[0].after}"></a>
-                    </span>
-                    <span th:if="${#lists.size(post.priceHistory) == 0}">
-                        <a>Без цены</a>
-                    </span>
--->
                     <a th:text="${post.price}"></a>
                 </td>
 
                 <td th:text="${#temporals.format(post.created, 'dd-MM-EE-yyyy HH:mm:ss')}" />
+
                 <td>
-
-
-                    <!-- может не быть элементов массива, тогда вылетит ошибка-->
-<!--
-                    <img th:width="150" th:high="150" th:src="@{|/files/${post.files[0].id}|}">
--->
                     <span th:if="${#lists.size(post.files) > 0}">
                         <img th:width="150" th:high="150" th:src="@{|/files/${post.files[0].id}|}">
                     </span>
                     <span th:if="${#lists.size(post.files) == 0}">
                         <a>Без фотографий</a>
                     </span>
-
-                    <!--
-                                        <img th:src="@{/files/{fileId}(fileId=*{fileId})}" class="w-100" alt="No image">
-                    -->
-<!--
-                    <img th:src="@{/files/${post.files[0].id}" class="w-100" alt="No image">
--->
                 </td>
 
                 <td>
                     <span th:if="${post.publish}">
-                        <i class="fa fa-check-square-o"></i>
+                        <!--<i class="fa fa-check-square-o"></i>-->
+                        <i>Актуально</i>
                     </span>
                     <span th:if="${!post.publish}">
-                        <i class="fa fa-square-o"></i>
+                        <!--<i class="fa fa-square-o"></i>-->
+                        <i>Завершено</i>
                     </span>
+                </td>
+
+                <td>
                     <span th:if="${post.userId == user.id}">
                         <a th:href="@{|/posts/edit/${post.id}|}">
                             <i class="fa fa-pencil-square-o"></i>
                         </a>
-
                     </span>
-
                 </td>
             </tr>
             </tbody>

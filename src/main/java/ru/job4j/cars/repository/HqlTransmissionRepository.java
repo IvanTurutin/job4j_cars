@@ -55,7 +55,7 @@ public class HqlTransmissionRepository implements TransmissionRepository {
     public Optional<Transmission> delete(Transmission transmission) {
         return cr.query(
                 DELETE_STATEMENT,
-                Map.of(ID, transmission.getId())
+                Map.of(ID, transmission.getCharactValue())
         )
                 ? Optional.of(transmission)
                 : Optional.empty();

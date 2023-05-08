@@ -7,9 +7,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.cars.dto.PostDto;
-import ru.job4j.cars.model.*;
+import ru.job4j.cars.model.Owner;
+import ru.job4j.cars.model.User;
+import ru.job4j.cars.search_attributes.UserSearchAttribute;
 import ru.job4j.cars.service.*;
 import ru.job4j.cars.util.ControllerUtility;
+
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
@@ -54,17 +57,20 @@ public class PostController {
      * Приозводит подготовку к формированию вида, отображающего выполненные задачи или невыполненные задачи
      * @param model модель вида
      * @param session сессия подключения
-     * @param isDone статус задачи
      * @return название шаблона для формирования соответствующего списка задач
      */
-/*    @GetMapping("/done/{isDone}")
-    public String doneTasks(HttpSession session, Model model, @PathVariable("isDone") boolean isDone) {
+    @GetMapping("/myPosts")
+    public String myPosts(HttpSession session, Model model) {
         model.addAttribute("user", ControllerUtility.checkUser(session));
-        List<Task> tasks = postService.findByDone(isDone);
-        model.addAttribute("tasks", tasks);
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("posts",
+                postService.findBySearchAttributes(List.of(new UserSearchAttribute(user)),
+                user));
+
+        model.addAttribute("showMode", "myPosts");
         return "index";
     }
-*/
+
     /**
      * Обрабатывает запрос на отображение вида добавления новой задачи
      * @param model модель вида

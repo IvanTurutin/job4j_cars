@@ -28,7 +28,7 @@ class HqlEngineRepositoryTest {
         Optional<Engine> engineOptional = store.findById(engine.getId());
 
         assertThat(engineOptional.isPresent()).isTrue();
-        assertThat(engineOptional.get().getId()).isNotEqualTo(0);
+        assertThat(engineOptional.get().getCharactValue()).isNotEqualTo(0);
     }
 
     @Test

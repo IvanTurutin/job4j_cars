@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.job4j.cars.repository.HqlPostRepository;
+import ru.job4j.cars.search_attributes.SearchAttribute;
 
 import javax.persistence.*;
 
@@ -31,9 +33,22 @@ public class Transmission implements SearchAttribute {
      */
     private String name;
 
+    private final  static String FIELD_NAME = "transmission";
+    private final static String CHARACTERISTIC = "fTransmissionId";
+
     @Override
-    public String getType() {
-        return this.getClass().getSimpleName().toLowerCase();
+    public String getSearchAttribute() {
+        return String.format(" %s.car.%s.id = :%s", HqlPostRepository.TABLE_ALIAS, FIELD_NAME, CHARACTERISTIC);
+    }
+
+    @Override
+    public Object getCharactValue() {
+        return id;
+    }
+
+    @Override
+    public String getCharacteristic() {
+        return CHARACTERISTIC;
     }
 
 }

@@ -54,7 +54,7 @@ public class HqlEngineRepository implements EngineRepository {
     public Optional<Engine> delete(Engine engine) {
         return cr.query(
                 DELETE_STATEMENT,
-                Map.of(ID, engine.getId())
+                Map.of(ID, engine.getCharactValue())
         )
                 ? Optional.of(engine)
                 : Optional.empty();

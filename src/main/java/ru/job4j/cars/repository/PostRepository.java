@@ -1,6 +1,7 @@
 package ru.job4j.cars.repository;
 
 import ru.job4j.cars.model.*;
+import ru.job4j.cars.search_attributes.SearchAttribute;
 
 import java.util.List;
 import java.util.Optional;

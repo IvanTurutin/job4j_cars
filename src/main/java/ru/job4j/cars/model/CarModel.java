@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.job4j.cars.repository.HqlPostRepository;
+import ru.job4j.cars.search_attributes.SearchAttribute;
 
 import javax.persistence.*;
 
@@ -20,9 +22,9 @@ public class CarModel implements SearchAttribute {
 
     /**
      * Название типа аттрибута поиска для клаcса CarModel
-     */
-    public static final String CAR_MODEL = "carModel";
 
+    public static final String CAR_MODEL = "carModel";
+     */
 
     /**
      * Идентификатор марки автомобиля
@@ -37,9 +39,21 @@ public class CarModel implements SearchAttribute {
      */
     private String name;
 
+    private final  static String FIELD_NAME = "carModel";
+    private final static String CHARACTERISTIC = "fCarModelId";
+
     @Override
-    public String getType() {
-        return CAR_MODEL;
+    public String getSearchAttribute() {
+        return String.format(" %s.car.%s.id = :%s", HqlPostRepository.TABLE_ALIAS, FIELD_NAME, CHARACTERISTIC);
     }
 
+    @Override
+    public Object getCharactValue() {
+        return id;
+    }
+
+    @Override
+    public String getCharacteristic() {
+        return CHARACTERISTIC;
+    }
 }

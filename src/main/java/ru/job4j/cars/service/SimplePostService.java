@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.model.*;
 import ru.job4j.cars.repository.PostRepository;
+import ru.job4j.cars.search_attributes.SearchAttribute;
+
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
@@ -74,7 +76,6 @@ public class SimplePostService implements PostService {
         car.setEngine(checkModel(Engine.class, () -> engineService.findById(car.getEngine().getId())));
         car.setOwner(checkModel(Owner.class, () -> ownerService.findById(car.getOwner().getId())));
         car.setCarOwners(car.getCarOwners().stream().filter(co -> co.getOwner() != null).collect(Collectors.toList()));
-        /*car.setCarOwners(car.getCarOwners().stream().filter(co -> co.getOwner() != null).collect(Collectors.toSet()));*/
         car.getCarOwners().forEach(co -> {
             co.setCar(car);
             co.setOwner(checkModel(Owner.class, () -> ownerService.findById(co.getOwner().getId())));
@@ -130,10 +131,6 @@ public class SimplePostService implements PostService {
         postDto.setText(post.getText());
         postDto.setCreated(post.getCreated());
         postDto.setCar(post.getCar());
-/*
-        List<PriceHistory> priceHistories = post.getPriceHistory();
-        postDto.setPriceHistory(List.of(priceHistories.get(priceHistories.size() - 1)));
-*/
         postDto.setPrice(post.getPriceHistory().get(post.getPriceHistory().size() - 1).getAfter());
         postDto.setPublish(post.isPublish());
         postDto.setFiles(fileService.fileListToFileDtoListLight(post.getFiles()));
@@ -145,13 +142,8 @@ public class SimplePostService implements PostService {
     public List<PostDto> findAll(User user) {
 
         List<PostDto> posts = findAll();
-        if (user.getTimeZone() != null) {
-            posts.forEach(postDto -> setTimeZone(postDto, user.getTimeZone().getZoneId()));
-        } else {
-            posts.forEach(this::setDefaultTimeZone);
-        }
+        posts.forEach(p -> setTimeZoneToPost(p, user));
         return posts;
-
     }
 
     private void setTimeZone(PostDto post, String zoneId) {
@@ -177,11 +169,7 @@ public class SimplePostService implements PostService {
     @Override
     public Optional<PostDto> findById(int id, User user) {
         Optional<PostDto> postDto = findById(id);
-        if (user.getTimeZone() != null) {
-            postDto.ifPresent(t -> setTimeZone(t, user.getTimeZone().getZoneId()));
-        } else {
-            postDto.ifPresent(this::setDefaultTimeZone);
-        }
+        postDto.ifPresent(p -> setTimeZoneToPost(p, user));
         return postDto;
     }
 
@@ -202,8 +190,28 @@ public class SimplePostService implements PostService {
     }
 
     @Override
-    public List<Post> findBySearchAttributes(List<SearchAttribute> characts) {
-        return repository.findBySearchAttributes(characts);
+    public List<PostDto> findBySearchAttributes(List<SearchAttribute> characts) {
+        return repository.findBySearchAttributes(characts).stream().map(this::postToPostDto).toList();
+    }
+
+    @Override
+    public List<PostDto> findBySearchAttributes(List<SearchAttribute> attributes, User user) {
+        List<PostDto> postDtoList = findBySearchAttributes(attributes);
+        postDtoList.forEach(p -> setTimeZoneToPost(p, user));
+        return postDtoList;
+    }
+
+    /**
+     * Устанавливает часовой пояс в объявление
+     * @param postDto DTO объявления
+     * @param user пользователь, для которого устанавливается часовой пояс
+     */
+    private void setTimeZoneToPost(PostDto postDto, User user) {
+        if (user != null && user.getTimeZone() != null) {
+            setTimeZone(postDto, user.getTimeZone().getZoneId());
+        } else {
+            setDefaultTimeZone(postDto);
+        }
     }
 
 }
