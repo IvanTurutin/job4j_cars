@@ -25,7 +25,6 @@ class HqlCarRepositoryTest {
     private static CarOwner carOwner;
     private static CarOwner carOwner2;
     private static List<CarOwner> owners;
-    //private static Set<CarOwner> owners;
 
     @BeforeAll
     public static void initStore() {

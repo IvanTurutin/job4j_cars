@@ -26,7 +26,6 @@ public interface PostService {
      * @param postDto    объявление.
      * @return true если успех, и false если неудача
      */
-    //boolean update(Post post, FileDto fileDto);
     boolean update(PostDto postDto);
 
     /**
