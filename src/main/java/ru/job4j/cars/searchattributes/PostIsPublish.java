@@ -1,4 +1,4 @@
-package ru.job4j.cars.search_attributes;
+package ru.job4j.cars.searchattributes;
 
 import lombok.ToString;
 import ru.job4j.cars.repository.HqlPostRepository;

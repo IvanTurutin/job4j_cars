@@ -1,5 +1,6 @@
 package ru.job4j.cars.service;
 
+import ru.job4j.cars.dto.UserDto;
 import ru.job4j.cars.model.User;
 
 import java.util.List;
@@ -42,6 +43,12 @@ public interface UserService {
      * @return пользователь.
      */
     Optional<User> findById(int id);
+
+    /**
+     * Обрабатывает запрос на поиск пользователя
+     * @return Optional<UserDto>
+     */
+    Optional<UserDto> findByIdUserDto(int id);
 
     /**
      * Обрабатывает запрос на поиск пользователя по логину LIKE %key%

@@ -41,4 +41,14 @@ public class SimpleTimeZoneService implements TimeZoneService {
         Optional<TimeZone> optionalCategory = repository.findById(id);
         return optionalCategory.isPresent() && repository.delete(optionalCategory.get()).isPresent();
     }
+
+    @Override
+    public TimeZone checkTimeZone(int id) {
+        Optional<TimeZone> timeZone = findById(id);
+        if (timeZone.isEmpty()) {
+            throw new IllegalArgumentException("Такого часового пояса нет в базе данных");
+        }
+        return timeZone.get();
+    }
+
 }

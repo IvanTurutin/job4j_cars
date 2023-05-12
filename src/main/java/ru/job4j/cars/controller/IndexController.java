@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.job4j.cars.model.User;
-import ru.job4j.cars.search_attributes.PostIsPublish;
+import ru.job4j.cars.searchattributes.PostIsPublish;
 import ru.job4j.cars.service.PostService;
 import ru.job4j.cars.util.ControllerUtility;
 

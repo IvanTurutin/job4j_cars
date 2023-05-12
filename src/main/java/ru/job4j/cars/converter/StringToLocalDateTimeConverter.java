@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import ru.job4j.cars.repository.SimpleCrudRepository;
 
-import javax.validation.constraints.NotNull;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,7 +37,7 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
             .toList();
 
     @Override
-    public LocalDateTime convert(@NotNull String s) {
+    public LocalDateTime convert(String s) {
         System.out.println("StringToLocalDateTimeConverter, string = " + s);
 
         try {

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.*;
-import ru.job4j.cars.search_attributes.SearchAttribute;
+import ru.job4j.cars.searchattributes.SearchAttribute;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,10 +20,7 @@ public class HqlPostRepository implements PostRepository {
     public static final String MODEL = "Post";
     public static final String ID = "fId";
     public static final String FROM = "fFrom";
-    public static final String CHARACTERISTIC = "fCharacteristic";
     public static final String USER_ID = "fUserId";
-    public static final String QUANTITY = "fQuantity";
-    public static final int QUANTITY_VALUE = 0;
     public static final String DELETE_STATEMENT = String.format(
             "DELETE %s WHERE id = :%s",
             MODEL, ID
@@ -127,21 +124,6 @@ public class HqlPostRepository implements PostRepository {
     private Helper formStatement(List<SearchAttribute> attributes) {
         Helper helper = new Helper(new StringBuilder(), new HashMap<>());
         helper.statement.append(" where");
-        /*for (int i = 0; i < attributes.size(); i++) {
-            if (i > 0 && !attributes.get(i).getSearchAttribute().equals(File.FILES)) {
-                helper.statement.append(String.format(" and t.car.%s.id = :%s", attributes.get(i).getSearchAttribute(), CHARACTERISTIC));
-                helper.findAttr.put(CHARACTERISTIC, attributes.get(i).getId());
-            } else if (i == 0 && attributes.get(i).getSearchAttribute().equals(File.FILES)) {
-                helper.statement.append(String.format(" t.%s.size > :%s", attributes.get(i).getSearchAttribute(), QUANTITY));
-                helper.findAttr.put(QUANTITY, QUANTITY_VALUE);
-            } else if (i > 0 && attributes.get(i).getSearchAttribute().equals(File.FILES)) {
-                helper.statement.append(String.format(" and t.%s.size > :%s", attributes.get(i).getSearchAttribute(), QUANTITY));
-                helper.findAttr.put(QUANTITY, QUANTITY_VALUE);
-            } else {
-                helper.statement.append(String.format(" t.car.%s.id = :%s", attributes.get(i).getSearchAttribute(), CHARACTERISTIC));
-                helper.findAttr.put(CHARACTERISTIC, attributes.get(i).getId());
-            }
-        }*/
         for (int i = 0; i < attributes.size(); i++) {
             if (i == 0) {
                 helper.statement.append(attributes.get(i).getSearchAttribute());
@@ -178,10 +160,10 @@ public class HqlPostRepository implements PostRepository {
 
         @Override
         public String toString() {
-            return "Helper{" +
-                    "statement=" + statement +
-                    ", findAttr=" + findAttr +
-                    '}';
+            return "Helper{"
+                    + "statement=" + statement
+                    + ", findAttr=" + findAttr
+                    + '}';
         }
     }
 

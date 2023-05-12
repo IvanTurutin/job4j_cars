@@ -2,7 +2,7 @@ package ru.job4j.cars.service;
 
 import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.model.*;
-import ru.job4j.cars.search_attributes.SearchAttribute;
+import ru.job4j.cars.searchattributes.SearchAttribute;
 
 import java.util.List;
 import java.util.Optional;

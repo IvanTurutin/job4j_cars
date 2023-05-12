@@ -45,4 +45,12 @@ public interface TimeZoneService {
      */
     boolean delete(int id);
 
-}
+    /**
+     * Проверяет наличие часового пояса в БД и выдает сформированный объект
+     * @param id идентификатор часового пояса
+     * @return объект часового пояса
+     */
+    TimeZone checkTimeZone(int id);
+
+
+    }

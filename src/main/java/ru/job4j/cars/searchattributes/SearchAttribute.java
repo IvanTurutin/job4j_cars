@@ -1,8 +1,11 @@
-package ru.job4j.cars.search_attributes;
+package ru.job4j.cars.searchattributes;
+
+import org.springframework.stereotype.Component;
 
 /**
  * Интерфейс для определения типа атрибутов поиска
  */
+@Component
 public interface SearchAttribute {
 
     /**

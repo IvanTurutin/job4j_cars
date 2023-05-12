@@ -37,6 +37,11 @@ public class User {
      */
     private String name;
 
+    /**
+     * Телефон пользователя
+     */
+    private String phone;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "timezone_id")
     private TimeZone timeZone;

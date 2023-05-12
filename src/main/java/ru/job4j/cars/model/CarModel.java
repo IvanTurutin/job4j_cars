@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.job4j.cars.repository.HqlPostRepository;
-import ru.job4j.cars.search_attributes.SearchAttribute;
+import ru.job4j.cars.searchattributes.SearchAttribute;
 
 import javax.persistence.*;
 
@@ -19,12 +19,6 @@ import javax.persistence.*;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CarModel implements SearchAttribute {
-
-    /**
-     * Название типа аттрибута поиска для клаcса CarModel
-
-    public static final String CAR_MODEL = "carModel";
-     */
 
     /**
      * Идентификатор марки автомобиля

@@ -75,7 +75,7 @@
                     <span th:text="${post.car.carModel.name}"></span>
                 </div>
                 <div class="card-body">
-                    <form th:action="@{|/users/formOwner/${post.userId}|}">
+                    <form th:action="@{|/users/showSeller/${post.userId}|}">
                         <div class="form-group">
                             <img th:each="file : ${post.files}" th:width="300" th:high="300" th:src="@{|/files/${file.id}|}">
 

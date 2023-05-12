@@ -5,6 +5,7 @@ import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.cars.dto.UserDto;
 import ru.job4j.cars.model.User;
 import ru.job4j.cars.service.TimeZoneService;
 import ru.job4j.cars.service.UserService;
@@ -46,7 +47,7 @@ public class UserController {
     public String registration(HttpSession session, Model model, @ModelAttribute User user) {
         model.addAttribute("user", ControllerUtility.checkUser(session));
         boolean regUser = userService.create(user);
-        /*System.out.println("user in registration" + user);*/
+        System.out.println("user in registration" + user);
         if (!regUser) {
             model.addAttribute("message", "Пользователь с таким логином уже существует.");
             return "message/fail";
@@ -140,4 +141,24 @@ public class UserController {
         session.invalidate();
         return "redirect:/users/loginPage";
     }
+
+    /**
+     * Готовит модель вида к отображению данных о продавце
+     * @param userId идентификатор продавца
+     * @param model модель вида
+     * @param session сессия подключения
+     * @return ссылку на шаблон вида отображения данных о продавце
+     */
+    @GetMapping("/showSeller/{userId}")
+    public String loginPage(@PathVariable int userId, Model model, HttpSession session) {
+        model.addAttribute("user", ControllerUtility.checkUser(session));
+        Optional<UserDto> seller = userService.findByIdUserDto(userId);
+        if (seller.isEmpty()) {
+            model.addAttribute("message", "Такой продавец не найден.");
+            return "message/fail";
+        }
+        model.addAttribute("seller", seller.get());
+        return "user/show";
+    }
+
 }

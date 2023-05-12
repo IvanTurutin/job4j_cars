@@ -7,9 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.cars.dto.PostDto;
+import ru.job4j.cars.dto.SearchAttributeDto;
 import ru.job4j.cars.model.Owner;
 import ru.job4j.cars.model.User;
-import ru.job4j.cars.search_attributes.UserSearchAttribute;
+import ru.job4j.cars.searchattributes.UserSearchAttribute;
 import ru.job4j.cars.service.*;
 import ru.job4j.cars.util.ControllerUtility;
 
@@ -144,6 +145,7 @@ public class PostController {
     @RequestMapping(value = "/addPost", method = RequestMethod.POST, params = "action=newOwner")
     public String newOwner(HttpSession session, Model model, @ModelAttribute PostDto post,
                           @RequestParam("mPFiles") List<MultipartFile> mPFiles) {
+        System.out.println("newOwner() запущен");
         model.addAttribute("user", ControllerUtility.checkUser(session));
         model.addAttribute("owner", new Owner());
         PostDto formedPost = ControllerUtility.formPostDto(post, session, mPFiles);
@@ -188,6 +190,22 @@ public class PostController {
         model.addAttribute("post", post.get());
         session.setAttribute("post", post.get());
         return "post/addNew";
+    }
+
+    @GetMapping("/findByAttributes")
+    public String findByAttributes(HttpSession session, Model model) {
+        modelAddAttributesAddNew(session, model);
+        SearchAttributeDto searchAttributes = new SearchAttributeDto();
+        model.addAttribute("searchAttributes", searchAttributes);
+        return "post/SelectSearchAttributes";
+    }
+
+    @RequestMapping(value = "/findBySelectedAttributes", method = RequestMethod.POST/*, params = "action=save"*/)
+    public String findBySelectedAttributes(HttpSession session, Model model, @ModelAttribute SearchAttributeDto searchAttributes) {
+        model.addAttribute("user", ControllerUtility.checkUser(session));
+        model.addAttribute("posts", postService.findBySearchAttributes(searchAttributes.getListOfAttributes()));
+        model.addAttribute("showMode", "all");
+        return "index";
     }
 
 }

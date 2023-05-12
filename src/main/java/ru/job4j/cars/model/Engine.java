@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.job4j.cars.repository.HqlPostRepository;
-import ru.job4j.cars.search_attributes.SearchAttribute;
+import ru.job4j.cars.searchattributes.SearchAttribute;
 
 import javax.persistence.*;
 

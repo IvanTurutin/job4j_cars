@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.model.*;
 import ru.job4j.cars.repository.PostRepository;
-import ru.job4j.cars.search_attributes.SearchAttribute;
+import ru.job4j.cars.searchattributes.SearchAttribute;
 
 import java.time.ZoneId;
 import java.util.List;

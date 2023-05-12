@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import ru.job4j.cars.config.HibernateConfiguration;
 import ru.job4j.cars.model.*;
 import ru.job4j.cars.model.TimeZone;
-import ru.job4j.cars.search_attributes.PostIsPublish;
-import ru.job4j.cars.search_attributes.SearchAttribute;
+import ru.job4j.cars.searchattributes.PostIsPublish;
+import ru.job4j.cars.searchattributes.SearchAttribute;
 
 import java.time.LocalDateTime;
 import java.util.*;

@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -8,6 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
             integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
@@ -21,12 +22,15 @@
 <div class="container">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" th:href="@{/index}">АвтоМаг</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="#">Регистрация<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" th:href="@{/index}">Все<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" th:href="@{/posts/myPosts}">Мои объявления</a>
+                <a class="nav-item nav-link active" th:href="@{/posts/findByAttributes}">Поиск по параметрам<span class="sr-only">(current)</span></a>
                 <li class="nav-item dropdown" th:if="${user.name == 'Гость'}" >
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span th:text="${user.name}"></span>
@@ -51,54 +55,60 @@
                         <a class="dropdown-item" th:href="@{/users/logout}">
                             <span>Выйти</span>
                         </a>
-
                     </div>
                 </li>
-
             </div>
         </div>
     </nav>
-    <div class="row">
+    <div class="row pt-3">
         <div class="card" style="width: 100%">
             <div class="card-header">
-                Регистрация.
+                Выбор фильтров поиска.
             </div>
-            <div class="card-body">
-                <form th:action="@{/users/registration}" method="POST">
-                    <input type="hidden" name="id" value="0"/>
-                    <div class="form-group">
-                        <label for="name">Имя пользователя</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Введите Имя">
-                    </div>
 
+            <div class="card-body">
+                <form th:action="@{/posts/findBySelectedAttributes}" method="POST" th:object="${searchAttributes}">
                     <div class="form-group">
-                        <label for="password">Пароль</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Введите пароль">
-                        <small id="password-help" class="form-text text-muted">
-                            Пароль должен быть длиной 8-20 символов, содержать буквы и цифры
-                            и не должен содержать пробелов.
-                        </small>
-                    </div>
-                    <div class="form-group">
-                        <label for="login">Логин</label>
-                        <input type="text" class="form-control" id="login" name="login" placeholder="Введите логин">
-                    </div>
-                    <div class="form-group">
-                        <label for="timeZone.id">Часовой пояс</label>
-                        <select class="form-control" id="timeZone.id" name="timeZone.id">
-                            <option th:each="timeZone, itemStat : ${timeZones}" th:value="${timeZone.id}" th:text="${timeZone.zoneId}"></option>
+                        <label for="carModel.id">Модель автомобиля</label>
+                        <select class="form-control" id="carModel.id" name="carModel.id">
+                            <option value="0">Выбери модель...</option>
+                            <option th:each="model, itemStat : ${models}" th:value="${model.id}" th:text="${model.name}"
+                                    th:selected="${model.id == 0}"></option>
                         </select>
                     </div>
+
                     <div class="form-group">
-                        <label for="phone">Телефон</label>
-                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Введите телефон">
+                        <label for="body.id">Кузов автомобиля</label>
+                        <select class="form-control" id="body.id" name="body.id">
+                            <option value="0">Выбери тип кузова...</option>
+                            <option th:each="body, itemStat : ${bodies}" th:value="${body.id}" th:text="${body.name}"
+                                    th:selected="${body.id == 0}"></option>
+                        </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Зарегистрировать</button>
+                    <div class="form-group">
+                        <label for="transmission.id">Тип коробки передач</label>
+                        <select class="form-control" id="transmission.id" name="transmission.id">
+                            <option value="0">Выбери тип трансмиссии...</option>
+                            <option th:each="transmission, itemStat : ${transmissions}" th:value="${transmission.id}"
+                                    th:text="${transmission.name}" th:selected="${transmission.id == 0}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="engine.id">Двигатель</label>
+                        <select class="form-control selectpicker" id="engine.id" name="engine.id">
+                            <option value="0">Выбери двигатель...</option>
+                            <option th:each="engine, itemStat : ${engines}" th:value="${engine.id}"
+                                    th:text="${engine.name}"></option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" name="action" value="save">Сохранить</button>
                 </form>
             </div>
         </div>
     </div>
+
 </div>
 </body>
-</html>
