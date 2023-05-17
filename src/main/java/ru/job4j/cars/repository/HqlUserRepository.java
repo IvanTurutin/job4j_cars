@@ -44,7 +44,7 @@ public class HqlUserRepository implements UserRepository {
      */
     @Override
     public Optional<User> create(User user) {
-        return crudRepository.run(session -> session.save(user)) ? Optional.of(user) : Optional.empty();
+        return crudRepository.add(user);
     }
 
     /**

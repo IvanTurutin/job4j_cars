@@ -32,9 +32,7 @@ public class HqlPriceHistoryRepository implements PriceHistoryRepository {
 
     @Override
     public Optional<PriceHistory> create(PriceHistory priceHistory) {
-        return crudRepository.run(session -> session.save(priceHistory))
-                ? Optional.of(priceHistory)
-                : Optional.empty();
+        return crudRepository.add(priceHistory);
     }
 
     @Override

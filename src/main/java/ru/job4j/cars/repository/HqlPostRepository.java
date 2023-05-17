@@ -2,6 +2,8 @@ package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
 import net.jcip.annotations.ThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.*;
 import ru.job4j.cars.searchattributes.SearchAttribute;
@@ -15,6 +17,7 @@ import java.util.*;
 public class HqlPostRepository implements PostRepository {
 
     private final CrudRepository crudRepository;
+    private static final Logger LOG = LoggerFactory.getLogger(HqlPostRepository.class.getName());
 
     public static final String TABLE_ALIAS = "t";
     public static final String MODEL = "Post";
@@ -43,9 +46,7 @@ public class HqlPostRepository implements PostRepository {
 
     @Override
     public Optional<Post> add(Post post) {
-        return crudRepository.run(session -> session.save(post))
-                ? Optional.of(post)
-                : Optional.empty();
+        return crudRepository.add(post);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class HqlPostRepository implements PostRepository {
 
     @Override
     public List<Post> findAllOrderById() {
-        System.out.println(FIND_ALL_ORDER_BY_ID_STATEMENT);
+        LOG.debug("FIND_ALL_ORDER_BY_ID_STATEMENT = " + FIND_ALL_ORDER_BY_ID_STATEMENT);
         return crudRepository.query(FIND_ALL_ORDER_BY_ID_STATEMENT, Post.class);
     }
 
@@ -116,9 +117,7 @@ public class HqlPostRepository implements PostRepository {
 
     /**
      * Формирует вторую часть запроса для отбора объявлений по критериям поиска.
-     * @param attributes список атрибутов поиска. Для фотографий действует отдельное правило формирования запроса
-     *                   (объявление должно содержать хотя бы одну фотографию). Для остальных атрибутов осуществляется
-     *                   поиск по id
+     * @param attributes список атрибутов поиска.
      * @return возвращает Helper
      */
     private Helper formStatement(List<SearchAttribute> attributes) {
@@ -134,7 +133,7 @@ public class HqlPostRepository implements PostRepository {
                 helper.findAttr.put(attributes.get(i).getCharacteristic(), attributes.get(i).getCharactValue());
             }
         }
-        System.out.println("helper at formStatement() = " + helper);
+        LOG.debug("helper at formStatement() = " + helper);
         return helper;
     }
 
@@ -177,9 +176,8 @@ public class HqlPostRepository implements PostRepository {
     }
 
     public List<Post> findPuplish(boolean isPublish) {
-
         String statement = "select t from Post as t where t.publish = " + isPublish;
-        System.out.println(statement);
+        LOG.debug("statement at findPuplish() = " + statement);
         return crudRepository.query(statement, Post.class);
     }
 }

@@ -35,7 +35,7 @@ public class HqlOwnerRepository implements OwnerRepository {
 
     @Override
     public Optional<Owner> add(Owner owner) {
-        return cr.run(session -> session.save(owner)) ? Optional.of(owner) : Optional.empty();
+        return cr.add(owner);
     }
 
     @Override
@@ -58,12 +58,11 @@ public class HqlOwnerRepository implements OwnerRepository {
 
     @Override
     public Optional<Owner> delete(Owner owner) {
-        return cr.query(
+        return cr.delete(
                 DELETE_STATEMENT,
-                Map.of(ID, owner.getId())
-        )
-                ? Optional.of(owner)
-                : Optional.empty();
+                Map.of(ID, owner.getId()),
+                owner
+        );
     }
 
     /**

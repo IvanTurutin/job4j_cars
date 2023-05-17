@@ -61,7 +61,6 @@ class HqlPostRepositoryTest {
         post.setText("Post1");
         timeZone = new TimeZone("UTC+1");
         user = new User("User1", "pass1", "UserName1", timeZone);
-        /*user.setLogin("User1");*/
         post.setUser(user);
 
         body = new Body();
@@ -92,7 +91,6 @@ class HqlPostRepositoryTest {
         carOwner2.setCar(car);
 
         List<CarOwner> owners = new ArrayList<>();
-        /*Set<CarOwner> owners = new HashSet<>();*/
         owners.add(carOwner);
         owners.add(carOwner2);
         car.setCarOwners(owners);
@@ -160,9 +158,9 @@ class HqlPostRepositoryTest {
         assertThat(postFromDb.get().getCar().getTransmission().getName()).isEqualTo("Transmission1");
         assertThat(postFromDb.get().getCar().getOwner().getName()).isEqualTo("Owner1");
         assertThat(postFromDb.get().getCar().getCarOwners()).isNotEmpty().hasSize(2);
-        /*assertThat(postFromDb.get().getCar().getCarOwners().get(0).getStartAt().toLocalDate()).isEqualTo(carOwner.getStartAt().toLocalDate());*/
+        assertThat(postFromDb.get().getCar().getCarOwners().get(0).getStartAt().toLocalDate()).isEqualTo(carOwner.getStartAt().toLocalDate());
         assertTrue(postFromDb.get().getCar().getCarOwners().contains(carOwner));
-        /*assertThat(postFromDb.get().getCar().getCarOwners().get(1).getStartAt().toLocalDate()).isEqualTo(carOwner2.getStartAt().toLocalDate());*/
+        assertThat(postFromDb.get().getCar().getCarOwners().get(1).getStartAt().toLocalDate()).isEqualTo(carOwner2.getStartAt().toLocalDate());
         assertTrue(postFromDb.get().getCar().getCarOwners().contains(carOwner2));
         assertThat(postFromDb.get().getPriceHistory()).isNotEmpty().hasSize(2).contains(priceHistory, priceHistory2);
         assertThat(postFromDb.get().getFiles()).isNotEmpty().hasSize(2).contains(file, file2);
@@ -272,7 +270,6 @@ class HqlPostRepositoryTest {
         posts.forEach(System.out::println);
         assertThat(posts).isNotEmpty().hasSize(1);
         assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo(carModel.getName());
-        /*assertThat(posts.get(0).getCar().getCarModel().getName()).isEqualTo("CarModel1");*/
 
         CarModel carModel2 = new CarModel();
         carModel2.setName("CarModel2");

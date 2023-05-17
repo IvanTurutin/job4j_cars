@@ -34,7 +34,6 @@ class HqlPriceHistoryRepositoryTest {
         car.setEngine(engine);
         Owner owner = new Owner();
         owner.setName("Owner1");
-        /*car.setOwner(owner);*/
         Owner owner2 = new Owner();
         owner2.setName("Owner2");
 
@@ -44,7 +43,6 @@ class HqlPriceHistoryRepositoryTest {
         ownerRepository.add(owner2);
 
         List<CarOwner> owners = new ArrayList<>();
-        /*Set<CarOwner> owners = new HashSet<>();*/
         CarOwner carOwner = new CarOwner();
         carOwner.setOwner(owner);
         CarOwner carOwner2 = new CarOwner();

@@ -34,7 +34,7 @@ public class HqlBodyRepository implements BodyRepository {
 
     @Override
     public Optional<Body> add(Body body) {
-        return cr.run(session -> session.save(body)) ? Optional.of(body) : Optional.empty();
+        return cr.add(body);
     }
 
     @Override
@@ -52,12 +52,11 @@ public class HqlBodyRepository implements BodyRepository {
 
     @Override
     public Optional<Body> delete(Body body) {
-        return cr.query(
+        return cr.delete(
                 DELETE_STATEMENT,
-                Map.of(ID, body.getCharactValue())
-        )
-                ? Optional.of(body)
-                : Optional.empty();
+                Map.of(ID, body.getId()),
+                body
+        );
     }
 
     /**

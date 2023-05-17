@@ -2,6 +2,8 @@ package ru.job4j.cars.controller;
 
 import lombok.AllArgsConstructor;
 import net.jcip.annotations.ThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,8 @@ public class OwnerController {
     private final TransmissionService transmissionService;
     private final EngineService engineService;
     private final OwnerService ownerService;
+    private static final Logger LOG = LoggerFactory.getLogger(OwnerController.class.getName());
+
 
     /**
      * Обрабатывает запрос на отображение вида добавления нового владельца
@@ -37,7 +41,7 @@ public class OwnerController {
     public String newOwner(HttpSession session, Model model, @ModelAttribute Owner owner) {
         model.addAttribute("user", ControllerUtility.checkUser(session));
         PostDto post = (PostDto) session.getAttribute("post");
-        /*System.out.println("post in newOwner() = " + post);*/
+        LOG.debug("post in newOwner() = " + post);
         if (!ownerService.add(owner)) {
             model.addAttribute("message", "Не удалось добавить нового владельца.");
             return "message/fail";
@@ -74,7 +78,7 @@ public class OwnerController {
     public String back(HttpSession session, Model model/*, @ModelAttribute Owner owner*/) {
         model.addAttribute("user", ControllerUtility.checkUser(session));
         PostDto post = (PostDto) session.getAttribute("post");
-        /*System.out.println("post in back() = " + post);*/
+        LOG.debug("post in back() = " + post);
         modelAddAttributesAddNew(session, model);
         model.addAttribute("post", post);
         return "post/addNew";

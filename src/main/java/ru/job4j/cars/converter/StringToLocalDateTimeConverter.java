@@ -38,7 +38,7 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
 
     @Override
     public LocalDateTime convert(String s) {
-        System.out.println("StringToLocalDateTimeConverter, string = " + s);
+        LOG.debug("StringToLocalDateTimeConverter, string = " + s);
 
         try {
             LocalDate ld = LocalDate.parse(s, DATE_TIME_FORMATTERS.get(0));

@@ -46,13 +46,6 @@ public class User {
     @JoinColumn(name = "timezone_id")
     private TimeZone timeZone;
 
-/*
-    двусторонняя связь не работает
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> posts;
-*/
-
     public User(String login, String password, String name, TimeZone timeZone) {
         this.login = login;
         this.password = password;

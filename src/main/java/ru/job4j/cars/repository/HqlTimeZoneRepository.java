@@ -30,7 +30,7 @@ public class HqlTimeZoneRepository implements TimeZoneRepository {
 
     @Override
     public Optional<TimeZone> add(TimeZone timeZone) {
-        return cr.run(session -> session.save(timeZone)) ? Optional.of(timeZone) : Optional.empty();
+        return cr.add(timeZone);
     }
 
     @Override
@@ -53,12 +53,11 @@ public class HqlTimeZoneRepository implements TimeZoneRepository {
 
     @Override
     public Optional<TimeZone> delete(TimeZone timeZone) {
-        return cr.query(
+        return cr.delete(
                 DELETE_STATEMENT,
-                Map.of(ID, timeZone.getId())
-        )
-                ? Optional.of(timeZone)
-                : Optional.empty();
+                Map.of(ID, timeZone.getId()),
+                timeZone
+        );
     }
 
     /**

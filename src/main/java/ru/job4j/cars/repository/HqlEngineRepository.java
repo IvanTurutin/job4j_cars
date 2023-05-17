@@ -34,7 +34,7 @@ public class HqlEngineRepository implements EngineRepository {
 
     @Override
     public Optional<Engine> add(Engine engine) {
-        return cr.run(session -> session.save(engine)) ? Optional.of(engine) : Optional.empty();
+        return cr.add(engine);
     }
 
     @Override
@@ -52,12 +52,11 @@ public class HqlEngineRepository implements EngineRepository {
 
     @Override
     public Optional<Engine> delete(Engine engine) {
-        return cr.query(
+        return cr.delete(
                 DELETE_STATEMENT,
-                Map.of(ID, engine.getCharactValue())
-        )
-                ? Optional.of(engine)
-                : Optional.empty();
+                Map.of(ID, engine.getId()),
+                engine
+        );
     }
 
     /**

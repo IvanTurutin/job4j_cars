@@ -26,7 +26,7 @@ public class CarOwner {
     /**
      * Владелец автомобиля
      */
-    @ManyToOne(/*fetch = FetchType.LAZY,*/)
+    @ManyToOne
     @JoinColumn(name = "owner_id")
     @EqualsAndHashCode.Include
     private Owner owner;
@@ -34,7 +34,7 @@ public class CarOwner {
     /**
      * Автомобиль
      */
-    @ManyToOne(fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id")
     @EqualsAndHashCode.Include
     private Car car;

@@ -35,7 +35,7 @@ public class HqlTransmissionRepository implements TransmissionRepository {
 
     @Override
     public Optional<Transmission> add(Transmission transmission) {
-        return cr.run(session -> session.save(transmission)) ? Optional.of(transmission) : Optional.empty();
+        return cr.add(transmission);
     }
 
     @Override
@@ -53,12 +53,11 @@ public class HqlTransmissionRepository implements TransmissionRepository {
 
     @Override
     public Optional<Transmission> delete(Transmission transmission) {
-        return cr.query(
+        return cr.delete(
                 DELETE_STATEMENT,
-                Map.of(ID, transmission.getCharactValue())
-        )
-                ? Optional.of(transmission)
-                : Optional.empty();
+                Map.of(ID, transmission.getCharactValue()),
+                transmission
+        );
     }
 
     /**

@@ -2,6 +2,8 @@ package ru.job4j.cars.service;
 
 import lombok.AllArgsConstructor;
 import net.jcip.annotations.ThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.model.*;
@@ -28,18 +30,20 @@ public class SimplePostService implements PostService {
     private final EngineService engineService;
     private final OwnerService ownerService;
     private final FileService fileService;
+    private static final Logger LOG = LoggerFactory.getLogger(SimplePostService.class.getName());
+
 
     @Override
     public boolean add(PostDto postDto) {
         Post post = postDtoToPost(postDto);
-        System.out.println("post at add() postService = " + post);
+        LOG.debug("post at add() postService = " + post);
         return repository.add(post).isPresent();
     }
 
     @Override
     public boolean update(PostDto postDto) {
         Post post = postDtoToPost(postDto);
-        System.out.println("post at update() postService = " + post);
+        LOG.debug("post at update() postService = " + post);
         return repository.update(post);
     }
 
@@ -50,7 +54,7 @@ public class SimplePostService implements PostService {
      * @throws IllegalArgumentException !!!!! Откуда берется исключение???
      */
     private Post postDtoToPost(PostDto postDto) throws IllegalArgumentException {
-        System.out.println("postDto at postDtoToPost() = " + postDto);
+        LOG.debug("postDto at postDtoToPost() = " + postDto);
         Post post = new Post();
         Optional<Post> postOptional = repository.findById(postDto.getId());
         if (postOptional.isPresent()) {
@@ -65,7 +69,7 @@ public class SimplePostService implements PostService {
         post.addPrice(postDto.getPrice());
         post.setFiles(fileService.fileDtoListToFileList(postDto.getFiles()));
         post.setPublish(postDto.isPublish());
-        /*System.out.println("post at postDtoToPost() after form = " + post);*/
+        LOG.debug("post at postDtoToPost() after form = " + post);
         return post;
     }
 
@@ -88,7 +92,7 @@ public class SimplePostService implements PostService {
         if (optionalModel.isEmpty()) {
             throw new IllegalArgumentException(model.getSimpleName() + " with specified id isn't find.");
         }
-        System.out.println("Model = " + model.getSimpleName() + ". " + optionalModel.get());
+        LOG.debug("Model = " + model.getSimpleName() + ". " + optionalModel.get());
         return optionalModel.get();
     }
 
@@ -140,12 +144,16 @@ public class SimplePostService implements PostService {
 
     @Override
     public List<PostDto> findAll(User user) {
-
         List<PostDto> posts = findAll();
         posts.forEach(p -> setTimeZoneToPost(p, user));
         return posts;
     }
 
+    /**
+     * Устанавливает время создания объявления с учетом часового пояса
+     * @param post объявление
+     * @param zoneId часовой пояс
+     */
     private void setTimeZone(PostDto post, String zoneId) {
         post.setCreated(
                 post.getCreated().atZone(
@@ -155,6 +163,10 @@ public class SimplePostService implements PostService {
         );
     }
 
+    /**
+     * Устанавливает время создания объявления с учетом часового пояса по умолчанию
+     * @param post объявление
+     */
     private void setDefaultTimeZone(PostDto post) {
         post.setCreated(
                 post.getCreated().atZone(TimeZone.getDefault().toZoneId()).toLocalDateTime()

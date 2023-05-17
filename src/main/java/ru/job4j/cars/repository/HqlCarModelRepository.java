@@ -34,7 +34,7 @@ public class HqlCarModelRepository implements CarModelRepository {
 
     @Override
     public Optional<CarModel> add(CarModel carModel) {
-        return cr.run(session -> session.save(carModel)) ? Optional.of(carModel) : Optional.empty();
+        return cr.add(carModel);
     }
 
     @Override
@@ -52,12 +52,11 @@ public class HqlCarModelRepository implements CarModelRepository {
 
     @Override
     public Optional<CarModel> delete(CarModel carModel) {
-        return cr.query(
+        return cr.delete(
                 DELETE_STATEMENT,
-                Map.of(ID, carModel.getCharactValue())
-        )
-                ? Optional.of(carModel)
-                : Optional.empty();
+                Map.of(ID, carModel.getId()),
+                carModel
+        );
     }
 
     /**

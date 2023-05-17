@@ -23,7 +23,7 @@ public class SimpleCrudRepository implements CrudRepository {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleCrudRepository.class.getName());
     private static final String LOG_MESSAGE = "Exception in SimpleCrudRepository";
 
-
+    @Override
     public boolean run(Consumer<Session> command) {
         boolean rslt = false;
         try {
@@ -39,6 +39,7 @@ public class SimpleCrudRepository implements CrudRepository {
         return rslt;
     }
 
+    @Override
     public void run(String query, Map<String, Object> args) {
         Consumer<Session> command = session -> {
             var sq = session
@@ -51,6 +52,21 @@ public class SimpleCrudRepository implements CrudRepository {
         run(command);
     }
 
+    @Override
+    public <T> Optional<T> add(T model) {
+        return run(session -> session.save(model))
+                ? Optional.of(model)
+                : Optional.empty();
+    }
+
+    @Override
+    public <T> Optional<T> delete(String query, Map<String, Object> args, T model) {
+        return query(query, args)
+                ? Optional.of(model)
+                : Optional.empty();
+    }
+
+    @Override
     public <T> Optional<T> optional(String query, Class<T> cl, Map<String, Object> args) {
         Function<Session, Optional<T>> command = session -> {
             var sq = session
@@ -59,11 +75,11 @@ public class SimpleCrudRepository implements CrudRepository {
                 sq.setParameter(arg.getKey(), arg.getValue());
             }
             var rslt = sq.getSingleResult();
-            System.out.println("tyt rabotaet public <T> Optional<T> optional(String query, Class<T> cl, Map<String, Object> args)");
+            /*
+             * вывод результата запроса необходим для подгрузки всех lazy объектов
+             */
             System.out.println(rslt);
-            System.out.println(rslt.getClass().getName());
             Optional<T> obj = Optional.of(rslt);
-            System.out.println(obj.get().getClass());
             return Optional.of(rslt);
         };
         try {
@@ -74,6 +90,7 @@ public class SimpleCrudRepository implements CrudRepository {
         return Optional.empty();
     }
 
+    @Override
     public <T> List<T> query(String query, Class<T> cl) {
         Function<Session, List<T>> command = session -> {
 
@@ -91,6 +108,7 @@ public class SimpleCrudRepository implements CrudRepository {
         return new ArrayList<>();
     }
 
+    @Override
     public <T> List<T> query(String query, Class<T> cl, Map<String, Object> args) {
         Function<Session, List<T>> command = session -> {
             var sq = session
@@ -125,6 +143,7 @@ public class SimpleCrudRepository implements CrudRepository {
         return false;
     }
 
+    @Override
     public <T> T tx(Function<Session, T> command) throws Exception {
         var session = sf.openSession();
         try (session) {

@@ -73,10 +73,6 @@
                     <input type="hidden" name="userName" th:value="${user.name}"/>
                     <input type="hidden" name="created" th:field="*{created}"/>
                     <input type="hidden" name="car.id" th:field="*{car.id}"/>
-<!--
-                    <input type="hidden" name="priceHistory" th:field="*{priceHistory}"/>
--->
-
 
                     <div class="form-group">
                         <label for="text">Описание</label>
@@ -180,11 +176,9 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <br>
-
                     <button class="btn btn-primary add_new_owner_btn" type="button">Добавить в историю владения</button>
 
                     <div class="form-check" th:if="${post.publish}">
@@ -193,13 +187,12 @@
                     </div>
 
                     <div class="form-check" th:if="${!post.publish}">
-                        <input type="checkbox" name="publish" class="form-check-input" id="publish"d>
+                        <input type="checkbox" name="publish" class="form-check-input" id="publish">
                         <label class="form-check-label" for="publish">Опубликовать</label>
                     </div>
 
                     <br>
                     <br>
-
                     <button type="submit" class="btn btn-primary" name="action" value="save">Сохранить</button>
                 </form>
             </div>

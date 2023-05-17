@@ -57,18 +57,6 @@
             </div>
         </div>
     </nav>
-    <!--    <div class="row pt-3">
-            <div class="card" style="width: 100%">
-                <div class="card-header">
-                    <span th:text="${post.car.carModel.name}"></span>
-                </div>
-                <div class="card-body">
-                    <img th:each="post, itemStat : ${posts}" th:width="300" th:high="300" th:src="@{|/files/${post.files[itemStat.index].id}|}">
-
-                </div>
-            </div>
-        </div>
--->
         <div class="row pt-3">
             <div class="card" style="width: 100%">
                 <div class="card-header">
@@ -130,17 +118,6 @@
                         </button>
                     </form>
                 </div>
-<!--                <div class="card-body">
-                    <form th:action="@{|/tasks/isDone/${task.id}|}" method="POST">
-                        <button type="submit" class="btn btn-primary">Задача выполнена</button>
-                    </form>
-                </div>
-                <div class="card-body" >
-                    <form th:action="@{|/tasks/delete/${task.id}|}" method="POST">
-                        <button type="submit" class="btn btn-primary">Удалить задачу</button>
-                    </form>
-                </div>
-                -->
             </div>
         </div>
     </div>
