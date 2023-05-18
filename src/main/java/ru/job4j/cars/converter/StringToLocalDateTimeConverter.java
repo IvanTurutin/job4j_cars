@@ -1,11 +1,9 @@
 package ru.job4j.cars.converter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
-import ru.job4j.cars.repository.SimpleCrudRepository;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -20,9 +18,8 @@ import java.util.List;
  */
 @Component
 @Validated
+@Slf4j
 public class StringToLocalDateTimeConverter implements Converter<String, LocalDateTime> {
-
-    private static final Logger LOG = LoggerFactory.getLogger(SimpleCrudRepository.class.getName());
 
     /**
      * Список поддерживаемых для конвертации форматы в виде строк
@@ -38,12 +35,12 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
 
     @Override
     public LocalDateTime convert(String s) {
-        LOG.debug("StringToLocalDateTimeConverter, string = " + s);
+        log.debug("StringToLocalDateTimeConverter, string = " + s);
 
         try {
             LocalDate ld = LocalDate.parse(s, DATE_TIME_FORMATTERS.get(0));
             LocalDateTime ldt = LocalDateTime.of(ld, LocalDateTime.MIN.toLocalTime());
-            LOG.debug("StringToLocalDateTimeConverter, LocalDateTime = " + ldt);
+            log.debug("StringToLocalDateTimeConverter, LocalDateTime = " + ldt);
             return ldt;
         } catch (DateTimeParseException ex) {
             /* deliberate empty block so that all parsers run*/
@@ -51,7 +48,7 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
 
         try {
             LocalDateTime ldt = LocalDateTime.parse(s, DATE_TIME_FORMATTERS.get(1));
-            LOG.debug("StringToLocalDateTimeConverter, LocalDateTime = " + ldt);
+            log.debug("StringToLocalDateTimeConverter, LocalDateTime = " + ldt);
             return ldt;
         } catch (DateTimeParseException ex) {
             /* deliberate empty block so that all parsers run*/

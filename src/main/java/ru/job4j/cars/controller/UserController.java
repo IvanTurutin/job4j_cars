@@ -1,9 +1,8 @@
 package ru.job4j.cars.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.ThreadSafe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +20,10 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/users")
 @AllArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
     private final TimeZoneService timeZoneService;
-    private static final Logger LOG = LoggerFactory.getLogger(UserController.class.getName());
-
 
     /**
      * Принимает запрос на отображение вида добавления пользователя
@@ -51,7 +49,7 @@ public class UserController {
     public String registration(HttpSession session, Model model, @ModelAttribute User user) {
         model.addAttribute("user", ControllerUtility.checkUser(session));
         boolean regUser = userService.create(user);
-        LOG.debug("user in registration" + user);
+        log.debug("user in registration" + user);
         if (!regUser) {
             model.addAttribute("message", "Пользователь с таким логином уже существует.");
             return "message/fail";
@@ -88,7 +86,7 @@ public class UserController {
             model.addAttribute("message", "Данные пользователя не обновлены");
             return "message/fail";
         }
-        LOG.debug("user in edit user = " + userOptional.get());
+        log.debug("user in edit user = " + userOptional.get());
         session.setAttribute("user", userOptional.get());
         model.addAttribute("user", ControllerUtility.checkUser(session));
         model.addAttribute("message", "Данные пользователя обновлены.");

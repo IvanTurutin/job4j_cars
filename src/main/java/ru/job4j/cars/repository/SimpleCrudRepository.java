@@ -1,11 +1,10 @@
 package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.ThreadSafe;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -18,9 +17,9 @@ import java.util.function.Function;
 @ThreadSafe
 @Repository
 @AllArgsConstructor
+@Slf4j
 public class SimpleCrudRepository implements CrudRepository {
     private final SessionFactory sf;
-    private static final Logger LOG = LoggerFactory.getLogger(SimpleCrudRepository.class.getName());
     private static final String LOG_MESSAGE = "Exception in SimpleCrudRepository";
 
     @Override
@@ -34,7 +33,7 @@ public class SimpleCrudRepository implements CrudRepository {
             );
             rslt = true;
         } catch (Exception e) {
-            LOG.error(LOG_MESSAGE, e);
+            log.error(LOG_MESSAGE, e);
         }
         return rslt;
     }
@@ -85,7 +84,7 @@ public class SimpleCrudRepository implements CrudRepository {
         try {
             return tx(command);
         } catch (Exception e) {
-            LOG.error(LOG_MESSAGE, e);
+            log.error(LOG_MESSAGE, e);
         }
         return Optional.empty();
     }
@@ -103,7 +102,7 @@ public class SimpleCrudRepository implements CrudRepository {
         try {
             return tx(command);
         } catch (Exception e) {
-            LOG.error(LOG_MESSAGE, e);
+            log.error(LOG_MESSAGE, e);
         }
         return new ArrayList<>();
     }
@@ -123,7 +122,7 @@ public class SimpleCrudRepository implements CrudRepository {
         try {
             return tx(command);
         } catch (Exception e) {
-            LOG.error(LOG_MESSAGE, e);
+            log.error(LOG_MESSAGE, e);
         }
         return new ArrayList<>();
     }
@@ -138,7 +137,7 @@ public class SimpleCrudRepository implements CrudRepository {
         try {
             return tx(command);
         } catch (Exception e) {
-            LOG.error(LOG_MESSAGE, e);
+            log.error(LOG_MESSAGE, e);
         }
         return false;
     }

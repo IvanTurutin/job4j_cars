@@ -1,9 +1,8 @@
 package ru.job4j.cars.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.ThreadSafe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +26,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/posts")
 @AllArgsConstructor
+@Slf4j
 public class PostController {
 
     private final PostService postService;
@@ -35,7 +35,6 @@ public class PostController {
     private final TransmissionService transmissionService;
     private final EngineService engineService;
     private final OwnerService ownerService;
-    private static final Logger LOG = LoggerFactory.getLogger(PostController.class.getName());
 
 
     /**
@@ -86,7 +85,7 @@ public class PostController {
     public String newPost(HttpSession session, Model model) {
         modelAddAttributesAddNew(session, model);
         PostDto post = new PostDto().getEmpty();
-        LOG.debug("post in newPost() = " + post);
+        log.debug("post in newPost() = " + post);
         model.addAttribute("post", post);
         return "post/addNew";
     }
@@ -114,11 +113,11 @@ public class PostController {
                              @RequestParam("mPFiles") List<MultipartFile> mPFiles) {
         User user = ControllerUtility.checkUser(session);
         model.addAttribute("user", user);
-        LOG.debug("post at addPost() before form files = " + post);
+        log.debug("post at addPost() before form files = " + post);
 
         PostDto formedPost = ControllerUtility.formPostDto(post, session, mPFiles);
 
-        LOG.debug("post at addPost() = " + formedPost);
+        log.debug("post at addPost() = " + formedPost);
 
         if (post.getId() == 0) {
             if (!postService.add(formedPost)) {
@@ -149,12 +148,12 @@ public class PostController {
     @RequestMapping(value = "/addPost", method = RequestMethod.POST, params = "action=newOwner")
     public String newOwner(HttpSession session, Model model, @ModelAttribute PostDto post,
                           @RequestParam("mPFiles") List<MultipartFile> mPFiles) {
-        LOG.trace("newOwner() запущен");
+        log.trace("newOwner() запущен");
         model.addAttribute("user", ControllerUtility.checkUser(session));
         model.addAttribute("owner", new Owner());
         PostDto formedPost = ControllerUtility.formPostDto(post, session, mPFiles);
         session.setAttribute("post", formedPost);
-        LOG.debug("post at newOwner() = " + post);
+        log.debug("post at newOwner() = " + post);
         return "owner/addNew";
     }
 
@@ -172,7 +171,7 @@ public class PostController {
         session.setAttribute("post", post);
         modelAddAttributesAddNew(session, model);
         model.addAttribute("post", post);
-        LOG.debug("post at deletePhoto() after delete = " + post);
+        log.debug("post at deletePhoto() after delete = " + post);
         return "post/addNew";
     }
 

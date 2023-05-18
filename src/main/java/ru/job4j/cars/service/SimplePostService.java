@@ -1,9 +1,8 @@
 package ru.job4j.cars.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.ThreadSafe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.model.*;
@@ -20,6 +19,7 @@ import java.util.stream.Collectors;
 @ThreadSafe
 @Service
 @AllArgsConstructor
+@Slf4j
 public class SimplePostService implements PostService {
 
     private final PostRepository repository;
@@ -30,20 +30,19 @@ public class SimplePostService implements PostService {
     private final EngineService engineService;
     private final OwnerService ownerService;
     private final FileService fileService;
-    private static final Logger LOG = LoggerFactory.getLogger(SimplePostService.class.getName());
 
 
     @Override
     public boolean add(PostDto postDto) {
         Post post = postDtoToPost(postDto);
-        LOG.debug("post at add() postService = " + post);
+        log.debug("post at add() postService = " + post);
         return repository.add(post).isPresent();
     }
 
     @Override
     public boolean update(PostDto postDto) {
         Post post = postDtoToPost(postDto);
-        LOG.debug("post at update() postService = " + post);
+        log.debug("post at update() postService = " + post);
         return repository.update(post);
     }
 
@@ -54,7 +53,7 @@ public class SimplePostService implements PostService {
      * @throws IllegalArgumentException !!!!! Откуда берется исключение???
      */
     private Post postDtoToPost(PostDto postDto) throws IllegalArgumentException {
-        LOG.debug("postDto at postDtoToPost() = " + postDto);
+        log.debug("postDto at postDtoToPost() = " + postDto);
         Post post = new Post();
         Optional<Post> postOptional = repository.findById(postDto.getId());
         if (postOptional.isPresent()) {
@@ -69,7 +68,7 @@ public class SimplePostService implements PostService {
         post.addPrice(postDto.getPrice());
         post.setFiles(fileService.fileDtoListToFileList(postDto.getFiles()));
         post.setPublish(postDto.isPublish());
-        LOG.debug("post at postDtoToPost() after form = " + post);
+        log.debug("post at postDtoToPost() after form = " + post);
         return post;
     }
 
@@ -92,7 +91,7 @@ public class SimplePostService implements PostService {
         if (optionalModel.isEmpty()) {
             throw new IllegalArgumentException(model.getSimpleName() + " with specified id isn't find.");
         }
-        LOG.debug("Model = " + model.getSimpleName() + ". " + optionalModel.get());
+        log.debug("Model = " + model.getSimpleName() + ". " + optionalModel.get());
         return optionalModel.get();
     }
 

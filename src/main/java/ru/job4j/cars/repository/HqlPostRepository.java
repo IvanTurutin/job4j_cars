@@ -1,9 +1,8 @@
 package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.ThreadSafe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.*;
 import ru.job4j.cars.searchattributes.SearchAttribute;
@@ -14,10 +13,10 @@ import java.util.*;
 @ThreadSafe
 @Repository
 @AllArgsConstructor
+@Slf4j
 public class HqlPostRepository implements PostRepository {
 
     private final CrudRepository crudRepository;
-    private static final Logger LOG = LoggerFactory.getLogger(HqlPostRepository.class.getName());
 
     public static final String TABLE_ALIAS = "t";
     public static final String MODEL = "Post";
@@ -64,7 +63,7 @@ public class HqlPostRepository implements PostRepository {
 
     @Override
     public List<Post> findAllOrderById() {
-        LOG.debug("FIND_ALL_ORDER_BY_ID_STATEMENT = " + FIND_ALL_ORDER_BY_ID_STATEMENT);
+        log.debug("FIND_ALL_ORDER_BY_ID_STATEMENT = " + FIND_ALL_ORDER_BY_ID_STATEMENT);
         return crudRepository.query(FIND_ALL_ORDER_BY_ID_STATEMENT, Post.class);
     }
 
@@ -133,7 +132,7 @@ public class HqlPostRepository implements PostRepository {
                 helper.findAttr.put(attributes.get(i).getCharacteristic(), attributes.get(i).getCharactValue());
             }
         }
-        LOG.debug("helper at formStatement() = " + helper);
+        log.debug("helper at formStatement() = " + helper);
         return helper;
     }
 
@@ -177,7 +176,7 @@ public class HqlPostRepository implements PostRepository {
 
     public List<Post> findPuplish(boolean isPublish) {
         String statement = "select t from Post as t where t.publish = " + isPublish;
-        LOG.debug("statement at findPuplish() = " + statement);
+        log.debug("statement at findPuplish() = " + statement);
         return crudRepository.query(statement, Post.class);
     }
 }

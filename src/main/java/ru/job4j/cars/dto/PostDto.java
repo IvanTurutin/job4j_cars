@@ -1,12 +1,10 @@
 package ru.job4j.cars.dto;
 
 import lombok.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.cars.model.*;
-import ru.job4j.cars.service.SimplePostService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -22,9 +20,8 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class PostDto {
-
-    private final static Logger LOG = LoggerFactory.getLogger(SimplePostService.class.getName());
 
     /**
      * Идентификатор объявления
@@ -99,7 +96,7 @@ public class PostDto {
                     this.addFile(fileDto);
                 }
             } catch (IOException e) {
-                LOG.error(e.toString());
+                log.error(e.toString());
             }
         }
     }
